@@ -10,7 +10,7 @@
     "build": "astro build",
     "preview": "pnpm run build && wrangler dev",
     "astro": "astro",
-    "check": "tsc --noEmit --runExternalCode",
+    "check": "astro sync && tsc --noEmit --runExternalCode",
     "deploy": "pnpm run build && wrangler deploy",
     "generate-types": "wrangler types"
   },

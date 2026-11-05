@@ -49,7 +49,7 @@ The pages are unstyled placeholders. Only the color palette is set. The final de
 | Command | Action |
 | :-- | :-- |
 | `pnpm dev` | Starts the dev server at `localhost:4321`. |
-| `pnpm check` | Type-checks all `.ts`, `.tsx`, and `.astro` files. |
+| `pnpm check` | Generates Astro types, then type-checks all `.ts`, `.tsx`, and `.astro` files. |
 | `pnpm build` | Builds the site into `dist/`. |
 | `pnpm preview` | Builds the site and runs it locally in the Workers runtime. |
 | `pnpm run deploy` | Builds the site and deploys it to Cloudflare. |
@@ -105,7 +105,7 @@ The colors come from the logo. They are Tailwind theme colors in `src/styles/glo
 `astro check` does not support TypeScript 7. This project uses the experimental `@astrojs/ts-content-mapper` package instead. It lets `tsc` type-check `.astro` files.
 
 - `tsconfig.json` registers the mapper under `contentMappers`.
-- `pnpm check` runs `tsc --noEmit --runExternalCode`. The `--runExternalCode` flag is required because the mapper runs code from `node_modules`.
+- `pnpm check` runs `astro sync`, then `tsc --noEmit --runExternalCode`. `astro sync` creates `.astro/types.d.ts`, which is gitignored, so a fresh clone needs it. The `--runExternalCode` flag is required because the mapper runs code from `node_modules`.
 
 If the mapper causes problems, switch to TypeScript 6 and `astro check`.
 
