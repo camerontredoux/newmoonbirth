@@ -3,6 +3,10 @@
 	"compatibility_date": "2026-11-01",
 	"compatibility_flags": ["global_fetch_strictly_public"],
 	"name": "newmoonbirth",
+	"routes": [
+		{ "pattern": "newmoonbirth.com", "custom_domain": true },
+		{ "pattern": "www.newmoonbirth.com", "custom_domain": true }
+	],
 	"main": "@astrojs/cloudflare/entrypoints/server",
 	"assets": {
 		"directory": "./dist",
