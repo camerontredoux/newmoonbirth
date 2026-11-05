@@ -71,6 +71,7 @@ src/
   layouts/
     Base.astro             Shared page shell: header, navigation, footer
   pages/                   One file per route
+    404.astro              Page for missing URLs
     index.astro            /
     what-is-a-doula.astro  /what-is-a-doula/
     services.astro         /services/
@@ -125,3 +126,13 @@ All pages are static. The build makes an assets-only Worker, so Worker code does
 - `site` in `astro.config.mjs` is `https://newmoonbirth.com`. The sitemap and canonical links use it.
 - `trailingSlash` is `always`, so page URLs end in `/`. Write internal links with the slash, for example `/contact/`. Links without it cause an extra redirect.
 - `Base.astro` adds a canonical link to every page.
+
+## Deploys
+
+Every push to `main` deploys the site. The GitHub Actions workflow `.github/workflows/deploy.yml` installs dependencies, runs `pnpm check`, and runs `pnpm run deploy`. It reads the repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
+
+To deploy without a push, run the workflow from the **Actions** tab, or run `pnpm run deploy` locally.
+
+## Email DNS
+
+The zone has a DMARC record, `_dmarc.newmoonbirth.com`, set to `v=DMARC1; p=none`. This is monitoring only. It does not change delivery. Do not change it to `quarantine` or `reject` until the reports show that all real mail passes SPF and DKIM.
