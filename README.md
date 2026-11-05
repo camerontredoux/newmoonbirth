@@ -68,6 +68,7 @@ public/
   favicon.ico, favicon-32.png, apple-touch-icon.png, icon-192.png, icon-512.png
                            Moon icons cut from logo.png. site.webmanifest lists the large ones.
   contact-card.png         Contact card image. Not used on a page yet.
+  og-image.png             Share image for Facebook, X, and other link previews, 1200 x 630. It is logo-wide.png with a margin.
 src/
   assets/
     moon-mark.png          Moon cut from logo.png with a transparent background
@@ -152,7 +153,12 @@ All pages are static. The build makes an assets-only Worker, so Worker code does
 - `@astrojs/sitemap` generates `sitemap-index.xml` and `sitemap-0.xml` at build time. It lists every page automatically.
 - `site` in `astro.config.mjs` is `https://newmoonbirth.com`. The sitemap and canonical links use it.
 - `trailingSlash` is `always`, so page URLs end in `/`. Write internal links with the slash, for example `/contact/`. Links without it cause an extra redirect.
-- `Base.astro` adds a canonical link to every page.
+- `Base.astro` adds a canonical link to every page except the 404 page.
+- Each page passes a `title` and a `description` to `Base`. Keep the description under about 160 characters, or Google cuts it off.
+- `Base.astro` adds Open Graph and Twitter Card tags to every page. Facebook, X, LinkedIn, Slack, and iMessage use them for link previews. All pages use `public/og-image.png`.
+- `Base.astro` adds structured data (JSON-LD) that describes the site, the business, and Starlee. Google uses it for the site name in results and for local business details.
+- The 404 page passes `noindex`, so search engines do not list it. The sitemap also leaves it out.
+- After a change to tags, check a page with the [Rich Results Test](https://search.google.com/test/rich-results) and the [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/). The debugger also clears the cached preview.
 
 ## Deploys
 

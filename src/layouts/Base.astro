@@ -6,13 +6,70 @@ import "../styles/global.css";
 
 interface Props {
 	title: string;
-	description?: string;
+	description: string;
+	/** Keeps the page out of search results, for example the 404 page. */
+	noindex?: boolean;
 }
 
-const {
-	title,
-	description = "New Moon Birth: birth doula support from Starlee Brown in Portland, Gresham, Vancouver, Camas, and Washougal.",
-} = Astro.props;
+const { title, description, noindex = false } = Astro.props;
+
+const siteName = "New Moon Birth";
+const fullTitle = `${title} | ${siteName}`;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const shareImage = {
+	url: new URL("/og-image.png", Astro.site).href,
+	width: 1200,
+	height: 630,
+	alt: "New Moon Birth logo: a watercolor crescent moon beside the name",
+};
+
+// Tells Google the site name, and that this is a local business with a phone number and service area.
+const structuredData = {
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "WebSite",
+			"@id": `${Astro.site}#website`,
+			url: Astro.site?.href,
+			name: siteName,
+			publisher: { "@id": `${Astro.site}#business` },
+			inLanguage: "en-US",
+		},
+		{
+			"@type": "LocalBusiness",
+			"@id": `${Astro.site}#business`,
+			name: siteName,
+			description: "Birth doula support from Starlee Brown in north Oregon and southwest Washington.",
+			url: Astro.site?.href,
+			logo: new URL("/logo.png", Astro.site).href,
+			image: shareImage.url,
+			telephone: "+1-281-995-4078",
+			email: "starlee@newmoonbirth.com",
+			address: {
+				"@type": "PostalAddress",
+				addressLocality: "Washougal",
+				addressRegion: "WA",
+				addressCountry: "US",
+			},
+			areaServed: [
+				"Portland, OR",
+				"Gresham, OR",
+				"Vancouver, WA",
+				"Camas, WA",
+				"Washougal, WA",
+			].map((name) => ({ "@type": "City", name })),
+			founder: { "@id": `${Astro.site}#starlee` },
+		},
+		{
+			"@type": "Person",
+			"@id": `${Astro.site}#starlee`,
+			name: "Starlee Brown",
+			jobTitle: "Birth doula",
+			worksFor: { "@id": `${Astro.site}#business` },
+			url: new URL("/about/", Astro.site).href,
+		},
+	],
+};
 
 // A page that fills the `hero` slot supplies its own h1. It gets a transparent header over the hero, and a white one after it.
 const hasHero = Astro.slots.has("hero");
@@ -37,10 +94,32 @@ const current = (href: string) => (Astro.url.pathname === href ? "page" : undefi
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<link rel="manifest" href="/site.webmanifest" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>{title} | New Moon Birth</title>
+		<title>{fullTitle}</title>
 		<meta name="description" content={description} />
-		<link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+		<meta name="author" content="Starlee Brown" />
+		<meta name="robots" content={noindex ? "noindex, follow" : "index, follow, max-image-preview:large"} />
+		{!noindex && <link rel="canonical" href={canonical} />}
 		<link rel="sitemap" href="/sitemap-index.xml" />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content={siteName} />
+		<meta property="og:locale" content="en_US" />
+		<meta property="og:title" content={fullTitle} />
+		<meta property="og:description" content={description} />
+		{!noindex && <meta property="og:url" content={canonical} />}
+		<meta property="og:image" content={shareImage.url} />
+		<meta property="og:image:type" content="image/png" />
+		<meta property="og:image:width" content={String(shareImage.width)} />
+		<meta property="og:image:height" content={String(shareImage.height)} />
+		<meta property="og:image:alt" content={shareImage.alt} />
+
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={fullTitle} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={shareImage.url} />
+		<meta name="twitter:image:alt" content={shareImage.alt} />
+
+		<script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 		<Font cssVariable="--font-gilda" preload />
 		<Font cssVariable="--font-corinthia" preload />
 		<Font cssVariable="--font-jost" preload={[{ weight: 300 }]} />
