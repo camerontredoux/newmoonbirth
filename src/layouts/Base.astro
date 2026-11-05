@@ -89,6 +89,15 @@ const current = (href: string) => (Astro.url.pathname === href ? "page" : undefi
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
+		<!-- Google Tag Manager -->
+		<script is:inline async src="https://www.googletagmanager.com/gtm.js?id=GTM-M4ZZJLF8"></script>
+		<script is:inline>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() {
+				dataLayer.push(arguments);
+			}
+			gtag("js", new Date());
+		</script>
 		<link rel="icon" href="/favicon.ico" sizes="48x48" />
 		<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />

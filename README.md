@@ -160,6 +160,10 @@ All pages are static. The build makes an assets-only Worker, so Worker code does
 - The 404 page passes `noindex`, so search engines do not list it. The sitemap also leaves it out.
 - After a change to tags, check a page with the [Rich Results Test](https://search.google.com/test/rich-results) and the [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/). The debugger also clears the cached preview.
 
+## Analytics
+
+`Base.astro` loads Google Tag Manager container `GTM-M4ZZJLF8` on every page. The scripts use `is:inline`, so Astro adds them to the page unchanged. Add or change tags, such as Google Analytics, in the Tag Manager dashboard, not in the code.
+
 ## Deploys
 
 Every push to `main` deploys the site. The GitHub Actions workflow `.github/workflows/deploy.yml` installs dependencies, runs `pnpm check`, and runs `pnpm run deploy`. It reads the repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
