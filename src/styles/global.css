@@ -217,19 +217,10 @@
 }
 
 /*
- * The night band on the home page. The band pins while it scrolls, and the scroll plays it as one night:
- * - Dusk: the cream page darkens to night, stars come out, and the moon mark rises and starts to glow.
- * - Night: photos come in from the edges as moons, each waxing from a crescent to full. The heading appears and
- *   "beginning" writes itself in.
- * - Dawn: the photos and heading leave, and the moon's light grows until the band is cream again, as it started.
- * Without scroll-driven animation support, or with reduced motion, the band is one still night scene.
+ * The night band on the home page: a still night sky. The band pins while it scrolls, and the scroll plays the
+ * moon and heading: the moon mark and the first line of the heading fade in together, then the scroll
+ * types the second line letter by letter. Without scroll-driven animation support, or with reduced motion, nothing moves.
  */
-@property --moon-shadow {
-  syntax: "<number>";
-  inherits: false;
-  initial-value: 1.1;
-}
-
 .night {
   view-timeline: --night block;
   text-align: center;
@@ -251,7 +242,7 @@
 .night-stars {
   position: absolute;
   inset: 0;
-  z-index: -2;
+  z-index: -1;
 }
 
 .night-star {
@@ -261,68 +252,6 @@
   border-radius: 50%;
   background-color: var(--color-moon-cream);
   opacity: var(--star-opacity);
-}
-
-.night-moon {
-  --moon-size: 28vw;
-  --moon-drift: 5vh;
-  position: absolute;
-  z-index: -1;
-  width: var(--moon-size);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  /* The faint full disc, and a thin ring around it, so the whole moon shows while the photo is still a crescent. */
-  background-color: color-mix(in oklab, var(--color-moon-mist) 7%, transparent);
-  outline: 1px solid color-mix(in oklab, var(--color-moon-gold) 40%, transparent);
-  outline-offset: clamp(0.5rem, 1.2vw, 1.125rem);
-}
-
-.night-moon-big {
-  --moon-size: 52vw;
-  --moon-drift: 12vh;
-
-  @media (width >= 48rem) {
-    --moon-size: clamp(16rem, 30vw, 32rem);
-  }
-}
-
-.night-moon-small {
-  @media (width >= 48rem) {
-    --moon-size: clamp(8rem, 12.5vw, 13.5rem);
-  }
-}
-
-/*
- * The photo, toned cream and navy like moonlight: grayscale multiplied onto cream, then navy lightens the darks.
- * The mask is the whole disc minus a soft-edged disc the same size. That second disc is the moon's shadow, and
- * --moon-shadow moves it off to the side: 0 covers the photo, 1 and more uncovers it.
- */
-.night-moon-disc {
-  position: relative;
-  isolation: isolate;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  overflow: hidden;
-  background-color: var(--color-moon-cream);
-  mask-image: linear-gradient(#000 0 0), radial-gradient(circle closest-side, #000 94%, transparent);
-  mask-composite: subtract;
-  mask-repeat: no-repeat;
-  mask-size: 100% 100%;
-  mask-position: 0 0, calc(var(--moon-dir) * var(--moon-shadow) * var(--moon-size)) 0;
-
-  & img {
-    filter: grayscale(1) contrast(1.08);
-    mix-blend-mode: multiply;
-  }
-
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-color: var(--color-moon-navy);
-    mix-blend-mode: lighten;
-  }
 }
 
 .night-mark {
@@ -341,18 +270,10 @@
   display: block;
 }
 
-.night-dawn {
-  display: none;
-}
-
 @media (prefers-reduced-motion: no-preference) {
-  .night-star-twinkle {
-    animation: night-twinkle 4.5s var(--ease-in-out-sine) infinite alternate;
-  }
-
   @supports (animation-timeline: view()) {
     .night {
-      height: 320svh;
+      height: 220svh;
     }
 
     .night-stage {
@@ -360,134 +281,40 @@
       top: 0;
       height: 100svh;
       min-height: 0;
-      animation: night-sky linear both;
-      animation-timeline: --night;
-      animation-range: contain 0% contain 100%;
-    }
-
-    .night-stars {
-      animation: night-stars-in linear both, night-fade-out linear forwards;
-      animation-timeline: --night, --night;
-      animation-range: contain 8% contain 26%, contain 72% contain 86%;
-    }
-
-    .night-moon {
-      animation: night-moon-in linear both, night-moon-out linear forwards, night-moon-drift linear both;
-      animation-timeline: --night, --night, --night;
-      animation-range:
-        contain var(--moon-start) contain calc(var(--moon-start) + 16%),
-        contain 72% contain 90%,
-        contain 0% contain 100%;
-    }
-
-    .night-moon-disc {
-      animation: night-moon-wax linear both;
-      animation-timeline: --night;
-      animation-range: contain calc(var(--moon-start) + 6%) contain calc(var(--moon-start) + 32%);
     }
 
     .night-mark {
       animation: night-mark linear both;
       animation-timeline: --night;
-      animation-range: contain 0% contain 100%;
+      animation-range: contain 15% contain 40%;
     }
 
     .night-line {
-      animation: night-line-in linear both, night-line-out linear forwards;
-      animation-timeline: --night, --night;
-      animation-range: contain 26% contain 38%, contain 66% contain 74%;
-    }
-
-    .night-line-late {
-      animation-range: contain 42% contain 52%, contain 66% contain 74%;
-    }
-
-    .night-write {
-      animation: night-write linear both;
+      animation: night-line-in linear both;
       animation-timeline: --night;
-      animation-range: contain 31% contain 42%;
+      animation-range: contain 15% contain 40%;
     }
 
-    /* The moon's light grows out from the moon mark until it fills the band with cream. */
-    .night-dawn {
-      display: block;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      z-index: 1;
-      width: 300vmax;
-      aspect-ratio: 1;
-      translate: -50% -50%;
-      pointer-events: none;
-      background-image: radial-gradient(closest-side, var(--color-moon-cream) 90%, transparent);
-      animation: night-dawn linear both;
+    /* Each letter appears at its own point in the scroll, set by --at in index.astro. It snaps in, like a keystroke. */
+    .night-char {
+      animation: night-type steps(1, jump-start) both;
       animation-timeline: --night;
-      animation-range: contain 74% contain 96%;
+      animation-range: contain var(--at) contain 100%;
     }
   }
 }
 
-@keyframes night-sky {
-  0% { background-color: var(--color-moon-cream); }
-  8% { background-color: var(--color-moon-mist); }
-  17% { background-color: var(--color-moon-navy); }
-  26%, 100% { background-color: var(--color-moon-ink); }
-}
-
-@keyframes night-stars-in {
-  from { opacity: 0; translate: 0 4vh; }
-}
-
-@keyframes night-fade-out {
-  to { opacity: 0; }
-}
-
-@keyframes night-twinkle {
-  to { opacity: calc(var(--star-opacity) * 0.2); }
-}
-
-@keyframes night-moon-in {
-  from { translate: calc(var(--moon-dir) * 90%) 0; opacity: 0; }
-}
-
-@keyframes night-moon-out {
-  to { translate: calc(var(--moon-dir) * 90%) 0; opacity: 0; }
-}
-
-@keyframes night-moon-drift {
-  from { transform: translateY(var(--moon-drift)); }
-  to { transform: translateY(calc(var(--moon-drift) * -1)); }
-}
-
-@keyframes night-moon-wax {
-  from { --moon-shadow: 0.15; }
-  to { --moon-shadow: 1.1; }
-}
-
-/* Rises and starts to glow at dusk, turns through the night, and settles back where it started at dawn. */
+/* Fades in with the first line, rises, turns upright, and starts to glow. The `to` state is the mark's own still style. */
 @keyframes night-mark {
-  0%, 100% { translate: 0 0; rotate: 0deg; scale: 1; filter: drop-shadow(0 0 0 transparent); }
-  26% { translate: 0 -3vh; rotate: -8deg; scale: 1.12; filter: drop-shadow(0 0 2.5rem color-mix(in oklab, var(--color-moon-sand) 45%, transparent)); }
-  74% { translate: 0 -5vh; rotate: 6deg; scale: 1.12; filter: drop-shadow(0 0 2.5rem color-mix(in oklab, var(--color-moon-sand) 45%, transparent)); }
+  from { opacity: 0; translate: 0 4vh; rotate: -14deg; scale: 0.9; filter: drop-shadow(0 0 0 transparent); }
 }
 
 @keyframes night-line-in {
   from { opacity: 0; translate: 0 1.25rem; filter: blur(8px); }
 }
 
-@keyframes night-line-out {
-  to { opacity: 0; translate: 0 -1rem; filter: blur(8px); }
-}
-
-/* Wipes the word in from left to right, like a pen. The negative insets leave room for the script's flourishes. */
-@keyframes night-write {
-  from { clip-path: inset(-0.6em 100% -0.6em -0.4em); }
-  to { clip-path: inset(-0.6em -0.4em -0.6em -0.4em); }
-}
-
-@keyframes night-dawn {
-  from { scale: 0; }
-  to { scale: 1; }
+@keyframes night-type {
+  from { opacity: 0; }
 }
 
 /*

@@ -102,10 +102,13 @@ const current = (href: string) => (Astro.url.pathname === href ? "page" : undefi
 		<footer class="bg-moon-sand/45">
 			<div class="mx-auto grid max-w-7xl gap-14 px-6 py-20 md:grid-cols-[1.5fr_1fr_1fr] md:px-10 md:py-24">
 				<div>
-					{/* The wide logo, rebuilt from the transparent moon and wordmark. Positions measured from public/logo-wide.png. */}
-					<div role="img" aria-label="New Moon Birth" class="relative aspect-922/508 w-64 md:w-72">
-						<Image src={moon} alt="" width={320} class="absolute top-0 left-0 w-[48.83%]" />
-						<span class="wordmark absolute top-[42.97%] left-[21.18%] block w-[78.82%] text-moon-navy"></span>
+					{
+						/* The wide logo, rebuilt from the transparent moon and wordmark. Positions measured from public/logo-wide.png,
+						with the moon at 65% of its size there, centered on the wordmark. */
+					}
+					<div role="img" aria-label="New Moon Birth" class="relative aspect-854/330 w-59 md:w-66.5">
+						<Image src={moon} alt="" width={240} class="absolute top-0 left-0 w-[34.26%]" />
+						<span class="wordmark absolute top-[40.15%] left-[14.84%] block w-[85.16%] text-moon-navy"></span>
 					</div>
 					<p class="mt-5 max-w-xs">Birth doula support in north Oregon and southwest Washington.</p>
 				</div>

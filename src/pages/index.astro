@@ -8,10 +8,6 @@ import pregnancyPhoto from "../assets/photos/pregnancy-window.jpg";
 import birthPhoto from "../assets/photos/baby-hand.jpg";
 import postpartumPhoto from "../assets/photos/newborn-chest.jpg";
 import connectPhoto from "../assets/photos/hands-blanket.jpg";
-import bellyHandsPhoto from "../assets/photos/belly-hands.jpg";
-import laceBellyPhoto from "../assets/photos/lace-belly.jpg";
-import babyFeetPhoto from "../assets/photos/baby-feet.jpg";
-import newbornFacePhoto from "../assets/photos/newborn-face.jpg";
 
 const formats = ["avif", "webp"];
 
@@ -44,60 +40,20 @@ const towns = [
 	{ name: "Washougal", state: "Washington" },
 ];
 
-// The photo moons in the night band. `dir` is the side the moon comes in from and its shadow leaves to.
-// `start` is how far through the band, in percent of its scroll, the moon starts to come in.
-const nightMoons = [
-	{
-		photo: bellyHandsPhoto,
-		alt: "A pregnant woman cradles her belly in both hands",
-		dir: -1,
-		start: 14,
-		big: true,
-		focus: "38% 50%",
-		class: "top-[6%] left-[-16vw] md:top-[-7%] md:left-[-8vw]",
-	},
-	{
-		photo: newbornFacePhoto,
-		alt: "A newborn sleeps with eyes closed",
-		dir: 1,
-		start: 22,
-		big: false,
-		focus: "60% 50%",
-		class: "top-[11%] right-[5vw] md:top-[13%] md:right-[13vw]",
-	},
-	{
-		photo: laceBellyPhoto,
-		alt: "A pregnant woman in a lace dress rests her hands on her belly",
-		dir: -1,
-		start: 26,
-		big: false,
-		focus: "45% 50%",
-		class: "bottom-[10%] left-[5vw] md:bottom-[11%] md:left-[15vw]",
-	},
-	{
-		photo: babyFeetPhoto,
-		alt: "A parent holds a newborn's feet in cupped hands",
-		dir: 1,
-		start: 18,
-		big: true,
-		focus: "52% 60%",
-		class: "right-[-16vw] bottom-[6%] md:right-[-8vw] md:bottom-[-9%]",
-	},
-];
+// The scroll types "full heart." into the night band one letter at a time, between 48% and 88% of the way through it.
+const typed = [..."full heart."].map((char, i, all) => ({ char, style: `--at: ${(48 + (i * 40) / all.length).toFixed(2)}%` }));
 
-// A fixed star field, the same on every build. Every fifth star twinkles.
+// A fixed star field, the same on every build.
 let seed = 11;
 const random = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-const stars = Array.from({ length: 110 }, (_, i) => ({
-	style: [
+const stars = Array.from({ length: 110 }, () =>
+	[
 		`left: ${(random() * 100).toFixed(2)}%`,
 		`top: ${(random() * 100).toFixed(2)}%`,
 		`--star-size: ${(1.2 + random() * 1.8).toFixed(2)}px`,
 		`--star-opacity: ${(0.35 + random() * 0.6).toFixed(2)}`,
-		`animation-delay: -${(random() * 7).toFixed(2)}s`,
 	].join("; "),
-	twinkle: i % 5 === 0,
-}));
+);
 ---
 
 <Base title="Birth doula in Portland and southwest Washington">
@@ -220,35 +176,18 @@ const stars = Array.from({ length: 110 }, (_, i) => ({
 	<section aria-labelledby="moon-title" class="night">
 		<div class="night-stage">
 			<div aria-hidden="true" class="night-stars">
-				{stars.map((star) => <i style={star.style} class:list={["night-star", star.twinkle && "night-star-twinkle"]} />)}
+				{stars.map((style) => <i style={style} class="night-star" />)}
 			</div>
-			{
-				nightMoons.map((moon) => (
-					<div
-						data-testid="night-moon"
-						class:list={["night-moon", moon.big ? "night-moon-big" : "night-moon-small", moon.class]}
-						style={`--moon-dir: ${moon.dir}; --moon-start: ${moon.start}%; --moon-focus: ${moon.focus}`}
-					>
-						<div class="night-moon-disc">
-							<Picture
-								src={moon.photo}
-								alt={moon.alt}
-								widths={moon.big ? [400, 800, 1200] : [240, 480]}
-								sizes={moon.big ? "(min-width: 768px) 30vw, 52vw" : "(min-width: 768px) 13vw, 28vw"}
-								formats={formats}
-								class="size-full object-cover object-(--moon-focus)"
-							/>
-						</div>
-					</div>
-				))
-			}
-			<div class="relative">
-				<div aria-hidden="true" class="night-dawn"></div>
-				<Image src={moon} alt="" width={320} class="night-mark relative z-2 w-24 md:w-32" />
-			</div>
+			<Image src={moon} alt="" width={320} class="night-mark w-24 md:w-32" />
 			<h2 id="moon-title" class="night-title">
 				<span class="night-line">Calm hands, clear head,</span>{" "}
-				<span class="night-line night-line-late"><span class="script night-write">full heart</span>.</span>
+				<span class="night-line">
+					<span class="sr-only">full heart.</span>
+					<span aria-hidden="true"
+						><span class="script">{typed.slice(0, -1).map(({ char, style }) => <span {style} class="night-char">{char}</span>)}</span
+						><span style={typed.at(-1)!.style} class="night-char">.</span></span
+					>
+				</span>
 			</h2>
 		</div>
 	</section>
