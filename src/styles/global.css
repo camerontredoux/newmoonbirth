@@ -1,1 +1,24 @@
 @import "tailwindcss";
+
+/*
+ * New Moon Birth palette, sampled from the logo.
+ * Placeholder theme only: final design is still to come.
+ */
+@theme {
+  --color-moon-cream: #f6f1e7;   /* page background, warm off-white */
+  --color-moon-sand: #e8dcc4;    /* warm beige from the moon's light side */
+  --color-moon-gold: #c9b48a;    /* muted gold accent */
+  --color-moon-mist: #b9c6d6;    /* pale watercolor blue */
+  --color-moon-blue: #5f7ea8;    /* mid watercolor blue */
+  --color-moon-navy: #3b5683;    /* wordmark navy, primary text and brand */
+  --color-moon-ink: #26364f;     /* deep navy for body text */
+}
+
+@layer base {
+  body {
+    @apply bg-moon-cream text-moon-ink;
+  }
+  a {
+    @apply text-moon-navy underline;
+  }
+}

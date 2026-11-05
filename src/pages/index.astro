@@ -1,19 +1,10 @@
 ---
-import "../styles/global.css";
-import Counter from "../components/Counter";
+import Base from "../layouts/Base.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body class="flex min-h-screen flex-col items-center justify-center gap-4">
-		<h1 class="text-3xl font-bold">Astro</h1>
-		<Counter client:load />
-	</body>
-</html>
+<Base title="Home">
+	<p>Placeholder: hero, short intro to Starlee and New Moon Birth, and a call to book a free consultation.</p>
+	<p>Serving Portland and Gresham, OR, and Vancouver, Camas, and Washougal, WA.</p>
+	<p>Placeholder: testimonials.</p>
+	<p><a href="/contact">Book a consultation</a></p>
+</Base>

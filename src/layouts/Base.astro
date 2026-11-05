@@ -1,0 +1,47 @@
+---
+import "../styles/global.css";
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+
+const nav = [
+	{ href: "/", label: "Home" },
+	{ href: "/what-is-a-doula", label: "What is a doula" },
+	{ href: "/services", label: "Services" },
+	{ href: "/about", label: "About" },
+	{ href: "/gallery", label: "Gallery" },
+	{ href: "/contact", label: "Contact & booking" },
+	{ href: "/billing", label: "Billing help" },
+];
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<title>{title} | New Moon Birth</title>
+	</head>
+	<body>
+		<header>
+			<a href="/"><img src="/logo.png" alt="New Moon Birth" width="80" height="80" /></a>
+			<nav>
+				<ul>
+					{nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+				</ul>
+			</nav>
+		</header>
+		<main>
+			<h1>{title}</h1>
+			<slot />
+		</main>
+		<footer>
+			<p>New Moon Birth · Starlee Brown, doula · Washougal, WA</p>
+			<p>Serving north Oregon and southwest Washington.</p>
+		</footer>
+	</body>
+</html>
