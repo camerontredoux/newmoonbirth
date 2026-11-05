@@ -489,3 +489,86 @@
   from { scale: 0; }
   to { scale: 1; }
 }
+
+/*
+ * A hand-drawn frame around a photo, as if sketched in pencil. Two wobbly passes overshoot at the corners, and a
+ * small crescent sits at the top-right corner. The frame's SVG sits 0.75rem outside the photo and stretches with it.
+ * As the photo scrolls into view, the lines draw themselves in. Without scroll-driven animation support, or with
+ * reduced motion, the lines show fully drawn.
+ */
+.sketch-frame {
+  position: absolute;
+  inset: -0.75rem;
+  width: calc(100% + 1.5rem);
+  height: calc(100% + 1.5rem);
+  overflow: visible;
+  pointer-events: none;
+}
+
+/*
+ * Stroke widths are in SVG units, so the lines scale with the photo. The frame keeps the photo's 4:5 shape, so its
+ * stretch is almost even and the lines keep an even width. Avoid `vector-effect: non-scaling-stroke` here: it breaks
+ * the dash lengths the draw-in animation depends on.
+ */
+.sketch-line {
+  stroke: currentColor;
+  stroke-width: 0.35;
+}
+
+.sketch-line-second {
+  stroke-width: 0.22;
+  opacity: 0.7;
+}
+
+.sketch-moon .sketch-line {
+  stroke-width: 1.4;
+}
+
+.sketch-moon {
+  position: absolute;
+  top: -2.75rem;
+  right: -2rem;
+  width: 3rem;
+  rotate: 12deg;
+  overflow: visible;
+  pointer-events: none;
+
+  /* Small screens have only about 2.25rem beside the photo, so the crescent sits closer there. */
+  @media (width >= 48rem) {
+    top: -3.25rem;
+    right: -3.5rem;
+    width: 3.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .sketch {
+      view-timeline: --sketch block;
+    }
+
+    .sketch-line {
+      animation: sketch-draw linear both;
+      animation-timeline: --sketch;
+      animation-range: entry 10% cover 40%;
+    }
+
+    .sketch-line-second {
+      animation-range: entry 30% cover 50%;
+    }
+
+    .sketch-moon .sketch-line {
+      animation-range: cover 35% cover 50%;
+    }
+  }
+}
+
+/*
+ * Draws a path from its start to its end. The path needs pathLength="1".
+ * The stroke fades in over the first 2%, so the round cap does not show a dot before the line starts.
+ */
+@keyframes sketch-draw {
+  from { stroke-dasharray: 0 1; stroke-opacity: 0; }
+  2% { stroke-opacity: 1; }
+  to { stroke-dasharray: 1 0; }
+}

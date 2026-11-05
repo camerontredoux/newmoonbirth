@@ -3,7 +3,7 @@ import { Image, Picture } from "astro:assets";
 import Base from "../layouts/Base.astro";
 import moon from "../assets/moon-mark.png";
 import heroPhoto from "../assets/photos/hero-linen.jpg";
-import introPhoto from "../assets/photos/mother-newborn.jpg";
+import introPhoto from "../assets/photos/meet-starlee.jpg";
 import pregnancyPhoto from "../assets/photos/pregnancy-window.jpg";
 import birthPhoto from "../assets/photos/baby-hand.jpg";
 import postpartumPhoto from "../assets/photos/newborn-chest.jpg";
@@ -159,26 +159,57 @@ const stars = Array.from({ length: 110 }, (_, i) => ({
 
 	<section aria-labelledby="intro-title" class="px-6 py-24 md:px-10 md:py-40">
 		<div class="mx-auto grid max-w-6xl items-center gap-14 md:grid-cols-[5fr_6fr] md:gap-20 lg:gap-28">
-			<Picture
-				src={introPhoto}
-				alt="A mother holds her sleeping newborn close"
-				widths={[480, 800, 1200]}
-				sizes="(min-width: 768px) 40vw, 100vw"
-				formats={formats}
-				class="aspect-4/5 w-full object-cover"
-			/>
+			<div class="sketch relative mx-3 md:mx-0">
+				<Picture
+					src={introPhoto}
+					alt="Starlee smiles over her shoulder on a garden path"
+					widths={[480, 800, 1200]}
+					sizes="(min-width: 768px) 40vw, 100vw"
+					formats={formats}
+					class="aspect-4/5 w-full object-cover"
+				/>
+				<svg
+					aria-hidden="true"
+					viewBox="0 0 100 125"
+					preserveAspectRatio="none"
+					fill="none"
+					stroke-linecap="round"
+					class="sketch-frame"
+				>
+					<path
+						pathLength="1"
+						class="sketch-line text-moon-navy"
+						d="M -3 1.5 C 25 -0.6, 60 1.4, 103 -0.8 M 100.6 -3 C 99 35, 101.8 80, 99.6 128 M 102.5 124.2 C 70 126.1, 35 123.4, -2.5 125.6 M 0.4 127.5 C 1.7 90, -1.2 45, 0.8 -2.5"
+					></path>
+					<path
+						pathLength="1"
+						class="sketch-line sketch-line-second text-moon-blue"
+						d="M 1.5 -1.8 C 40 0.9, 70 -1.6, 101.2 1.2 M 98.7 2 C 100.9 50, 98.6 95, 101.1 123 M 98 126.4 C 60 124.1, 30 126.9, 1.2 123.8 M -1.4 122 C 0.9 80, -0.9 30, 1.9 3"
+					></path>
+				</svg>
+				<svg aria-hidden="true" viewBox="0 0 32 32" fill="none" stroke-linecap="round" class="sketch-moon text-moon-gold">
+					<path
+						pathLength="1"
+						class="sketch-line"
+						d="M 19 4 C 10 5, 4.5 12.5, 7 20 C 9.5 27, 18.5 29.5, 25 24.5 C 17.5 24.8, 12.6 18.5, 13.6 12 C 14.2 8.4, 16.2 5.6, 19.6 3.6"
+					></path>
+				</svg>
+			</div>
 			<div>
 				<h2 id="intro-title" class="text-[clamp(2.5rem,1.75rem+2.4vw,4rem)] leading-[1.1]">
 					<span class="script text-moon-blue">Hello,</span> I’m Starlee
 				</h2>
 				<div class="mt-8 max-w-[34rem] space-y-5">
 					<p>
-						I’m Starlee Brown, a birth doula based in Washougal, Washington. I support families through
-						pregnancy, birth, and the first weeks at home.
+						I’m a yoga teacher, a barista, and a big fan of a good book and a warm cup of tea. I love
+						connecting with people and creating spaces where everyone feels welcome to show up exactly as
+						they are.
 					</p>
 					<p>
-						A doula doesn’t replace your doctor or midwife. My role is you: helping you prepare, staying
-						beside you through labor, and making sure you feel heard every step of the way.
+						As your doula, I hope to be someone you feel completely comfortable around. Someone you can laugh
+						with, cry with, or just sit quietly with. I believe every person deserves to have their birth
+						preferences respected, without judgment or expectations. My goal is to take some of the weight off
+						your shoulders so you can focus on what matters most to you: bringing your baby into the world.
 					</p>
 				</div>
 				<a href="/about/" class="button-outline mt-10 text-moon-navy">More about Starlee</a>
