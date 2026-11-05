@@ -115,3 +115,11 @@ The site runs on Cloudflare Workers as the `newmoonbirth` Worker.
 - The zone also has email records (MX, SPF, DKIM) for Cloudflare Email Routing. Do not remove them.
 
 All pages are static. The build makes an assets-only Worker, so Worker code does not run yet. That changes when the site gets a server route, such as the contact form endpoint.
+
+## SEO
+
+- `public/robots.txt` allows all crawlers and points to the sitemap.
+- `@astrojs/sitemap` generates `sitemap-index.xml` and `sitemap-0.xml` at build time. It lists every page automatically.
+- `site` in `astro.config.mjs` is `https://newmoonbirth.com`. The sitemap and canonical links use it.
+- `trailingSlash` is `always`, so page URLs end in `/`. Write internal links with the slash, for example `/contact/`. Links without it cause an extra redirect.
+- `Base.astro` adds a canonical link to every page.
