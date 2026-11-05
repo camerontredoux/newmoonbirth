@@ -1,10 +1,225 @@
 ---
+import { Image, Picture } from "astro:assets";
 import Base from "../layouts/Base.astro";
+import moon from "../assets/moon-mark.png";
+import heroPhoto from "../assets/photos/hero-linen.jpg";
+import introPhoto from "../assets/photos/mother-newborn.jpg";
+import pregnancyPhoto from "../assets/photos/pregnancy-window.jpg";
+import birthPhoto from "../assets/photos/baby-hand.jpg";
+import postpartumPhoto from "../assets/photos/newborn-chest.jpg";
+import connectPhoto from "../assets/photos/hands-blanket.jpg";
+
+const formats = ["avif", "webp"];
+
+const stages = [
+	{
+		title: "Pregnancy",
+		photo: pregnancyPhoto,
+		alt: "A pregnant woman in a sheer white gown stands in soft window light",
+		text: "We get to know each other before your baby arrives. We talk through your hopes, your questions, and your birth preferences, so you feel ready.",
+	},
+	{
+		title: "Birth",
+		photo: birthPhoto,
+		alt: "A newborn's hand wraps around a parent's finger",
+		text: "When labor begins, I come to you and stay. Comfort measures, ideas for positions, steady words, and support for your partner too.",
+	},
+	{
+		title: "Postpartum",
+		photo: postpartumPhoto,
+		alt: "A newborn sleeps on a parent's shoulder",
+		text: "After your baby is born, I check in on how you are healing, feeding, and resting, and help you settle into life at home.",
+	},
+];
+
+const towns = [
+	{ name: "Portland", state: "Oregon" },
+	{ name: "Gresham", state: "Oregon" },
+	{ name: "Vancouver", state: "Washington" },
+	{ name: "Camas", state: "Washington" },
+	{ name: "Washougal", state: "Washington" },
+];
 ---
 
-<Base title="Home">
-	<p>Placeholder: hero, short intro to Starlee and New Moon Birth, and a call to book a free consultation.</p>
-	<p>Serving Portland and Gresham, OR, and Vancouver, Camas, and Washougal, WA.</p>
-	<p>Placeholder: testimonials.</p>
-	<p><a href="/contact/">Book a consultation</a></p>
+<Base title="Birth doula in Portland and southwest Washington">
+	<section
+		slot="hero"
+		aria-labelledby="hero-title"
+		class="relative isolate flex min-h-[max(100svh,40rem)] flex-col overflow-hidden bg-moon-ink text-moon-cream"
+	>
+		<Picture
+			src={heroPhoto}
+			alt="A pregnant woman in a white linen dress rests her hands on her belly"
+			widths={[640, 960, 1280, 1920, 2400]}
+			sizes="100vw"
+			formats={formats}
+			loading="eager"
+			fetchpriority="high"
+			class="absolute inset-0 -z-20 size-full object-cover object-[50%_40%] motion-safe:animate-settle"
+		/>
+		<div aria-hidden="true" class="absolute inset-0 -z-10 bg-moon-navy/35 mix-blend-multiply"></div>
+		<div
+			aria-hidden="true"
+			class="absolute inset-0 -z-10 bg-linear-to-b from-moon-ink/50 via-moon-ink/30 to-moon-ink/70"
+		>
+		</div>
+
+		<div class="flex flex-1 flex-col items-center justify-center px-6 pt-32 pb-12 text-center">
+			<h1
+				id="hero-title"
+				class="text-[clamp(2.75rem,1.25rem+4.6vw,7.5rem)] leading-[1.1] tracking-[-0.01em] text-moon-cream"
+			>
+				<span class="motion-safe:animate-rise md:block motion-safe:[animation-delay:250ms]">Calm, steady support</span>{" "}
+				<span class="motion-safe:animate-rise md:block motion-safe:[animation-delay:500ms]">
+					for your <span class="script">new beginning</span>
+				</span>
+			</h1>
+			<div class="mt-12 flex flex-col items-center gap-8 motion-safe:animate-rise motion-safe:[animation-delay:850ms] md:mt-16">
+				<svg aria-hidden="true" viewBox="0 0 180 12" fill="none" class="h-3.5 w-44 overflow-visible text-moon-cream/80">
+					<path
+						d="M1 6 C 11 0.5, 19 0.5, 30 6 S 49 11.5, 60 6 S 79 0.5, 90 6 S 109 11.5, 120 6 S 139 0.5, 150 6 S 169 11.5, 179 6"
+						stroke="currentColor"
+						stroke-width="1.25"
+						stroke-linecap="round"
+						vector-effect="non-scaling-stroke"
+						pathLength="1"
+						class="motion-safe:animate-draw-out"
+					></path>
+				</svg>
+				<p class="caps">Birth doula · Washougal, Washington</p>
+				<div class="flex flex-wrap justify-center gap-4">
+					<a href="/contact/" class="button-light">Book a free consultation</a>
+					<a href="/what-is-a-doula/" class="button-outline text-moon-cream">What a doula does</a>
+				</div>
+			</div>
+		</div>
+		<p class="caps hidden px-6 pb-8 text-center sm:block text-[0.65rem] text-moon-cream/85">
+			Portland · Gresham · Vancouver · Camas · Washougal
+		</p>
+	</section>
+
+	<section aria-labelledby="intro-title" class="px-6 py-24 md:px-10 md:py-40">
+		<div class="mx-auto grid max-w-6xl items-center gap-14 md:grid-cols-[5fr_6fr] md:gap-20 lg:gap-28">
+			<Picture
+				src={introPhoto}
+				alt="A mother holds her sleeping newborn close"
+				widths={[480, 800, 1200]}
+				sizes="(min-width: 768px) 40vw, 100vw"
+				formats={formats}
+				class="aspect-4/5 w-full object-cover"
+			/>
+			<div>
+				<h2 id="intro-title" class="text-[clamp(2.5rem,1.75rem+2.4vw,4rem)] leading-[1.1]">
+					<span class="script text-moon-blue">Hello,</span> I’m Starlee
+				</h2>
+				<div class="mt-8 max-w-[34rem] space-y-5">
+					<p>
+						I’m Starlee Brown, a birth doula based in Washougal, Washington. I support families through
+						pregnancy, birth, and the first weeks at home.
+					</p>
+					<p>
+						A doula doesn’t replace your doctor or midwife. My role is you: helping you prepare, staying
+						beside you through labor, and making sure you feel heard every step of the way.
+					</p>
+				</div>
+				<a href="/about/" class="button-outline mt-10 text-moon-navy">More about Starlee</a>
+			</div>
+		</div>
+	</section>
+
+	<section aria-labelledby="moon-title" class="bg-[color-mix(in_oklab,var(--color-moon-mist)_35%,white)] px-6 py-24 text-center md:py-36">
+		<Image src={moon} alt="" width={320} class="mx-auto w-24 md:w-32" />
+		<h2 id="moon-title" class="mx-auto mt-10 max-w-4xl text-[clamp(2rem,1.25rem+2.6vw,4rem)] leading-[1.25]">
+			A new moon marks a <span class="script">beginning</span>. So does every birth.
+		</h2>
+	</section>
+
+	<section aria-labelledby="support-title" class="px-6 py-24 md:px-10 md:py-40">
+		<div class="mx-auto max-w-6xl">
+			<div class="grid gap-6 md:grid-cols-2 md:items-end md:gap-20">
+				<h2 id="support-title" class="text-[clamp(2.5rem,1.75rem+2.4vw,4rem)] leading-[1.1]">
+					Support for every <span class="script text-moon-blue">stage</span>
+				</h2>
+				<p class="max-w-md">
+					Every family needs something different. Here is how I can help before, during, and after your baby
+					arrives.
+				</p>
+			</div>
+			<ul class="mt-16 grid gap-16 md:mt-24 md:grid-cols-3 md:gap-10 lg:gap-14">
+				{
+					stages.map((stage, i) => (
+						<li data-testid="support-stage" class:list={[i === 1 && "md:mt-24"]}>
+							<Picture
+								src={stage.photo}
+								alt={stage.alt}
+								widths={[480, 720, 960]}
+								sizes="(min-width: 768px) 30vw, 100vw"
+								formats={formats}
+								class="aspect-3/4 w-full object-cover"
+							/>
+							<h3 class="mt-8 text-3xl">{stage.title}</h3>
+							<p class="mt-4">{stage.text}</p>
+						</li>
+					))
+				}
+			</ul>
+			<p class="mt-20 text-center">
+				<a href="/services/" class="button-solid">See services and pricing</a>
+			</p>
+		</div>
+	</section>
+
+	<section aria-labelledby="area-title" class="bg-moon-sand/40 px-6 py-24 md:px-10 md:py-32">
+		<div class="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-[1fr_1.3fr] md:gap-24">
+			<div>
+				<h2 id="area-title" class="text-[clamp(2.5rem,1.75rem+2.4vw,4rem)] leading-[1.1]">
+					Close to <span class="script text-moon-blue">home</span>
+				</h2>
+				<p class="mt-6 max-w-sm">
+					Based in Washougal, I support families across north Oregon and southwest Washington.
+				</p>
+			</div>
+			<ul class="divide-y divide-moon-gold/60 border-y border-moon-gold/60">
+				{
+					towns.map((town) => (
+						<li class="flex items-baseline justify-between gap-6 py-5">
+							<span class="font-display text-[clamp(1.75rem,1.4rem+1vw,2.25rem)] leading-none text-moon-navy">
+								{town.name}
+							</span>
+							<span class="caps text-[0.65rem]">{town.state}</span>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
+
+	<section
+		aria-labelledby="connect-title"
+		class="relative isolate overflow-hidden bg-moon-ink px-6 py-32 text-center text-moon-cream md:py-48"
+	>
+		<Picture
+			src={connectPhoto}
+			alt=""
+			widths={[640, 1280, 1600]}
+			sizes="100vw"
+			formats={formats}
+			class="absolute inset-0 -z-20 size-full object-cover object-[50%_45%]"
+		/>
+		<div aria-hidden="true" class="absolute inset-0 -z-10 bg-moon-navy/45 mix-blend-multiply"></div>
+		<div aria-hidden="true" class="absolute inset-0 -z-10 bg-moon-ink/55"></div>
+		<h2 id="connect-title" class="text-[clamp(2.75rem,1.75rem+3.2vw,5rem)] leading-[1.1] text-moon-cream">
+			Let’s <span class="script">connect</span>
+		</h2>
+		<p class="mx-auto mt-8 max-w-xl text-moon-cream">
+			The first conversation is free. Tell me about your due date, your plans, and your questions, and we’ll see
+			if we’re a good fit.
+		</p>
+		<a href="/contact/" class="button-light mt-12">Book a free consultation</a>
+		<p class="mt-10 space-x-3 text-moon-cream">
+			<a href="tel:+12819954078" class="text-current">281-995-4078</a>
+			<span aria-hidden="true">·</span>
+			<a href="mailto:starlee@newmoonbirth.com" class="text-current">starlee@newmoonbirth.com</a>
+		</p>
+	</section>
 </Base>

@@ -2,7 +2,6 @@
 
 /*
  * New Moon Birth palette, sampled from the logo.
- * Placeholder theme only: final design is still to come.
  */
 @theme {
   --color-moon-cream: #f6f1e7;   /* page background, warm off-white */
@@ -12,13 +11,207 @@
   --color-moon-blue: #5f7ea8;    /* mid watercolor blue */
   --color-moon-navy: #3b5683;    /* wordmark navy, primary text and brand */
   --color-moon-ink: #26364f;     /* deep navy for body text */
+
+  /* Astro's font loader defines the --font-gilda, --font-corinthia and --font-jost variables. */
+  --font-display: var(--font-gilda);
+  --font-script: var(--font-corinthia);
+  --font-sans: var(--font-jost);
+
+  /* Letter spacing of the `caps` utility. */
+  --tracking-caps: 0.22em;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-settle: settle 2.6s var(--ease-out-expo) both;
+  /*
+   * The header's fade-in on page load. It matches the header's scroll fade (500ms, ease-out-expo, 0.75rem lift).
+   * `backwards` fill: once the animation ends, the header's own styles apply again, so its scroll fade still works.
+   */
+  --animate-header-in: header-in 500ms var(--ease-out-expo) 150ms backwards;
+  --animate-rise: rise 1.6s var(--ease-out-expo) both;
+  --ease-in-out-sine: cubic-bezier(0.37, 0, 0.63, 1);
+
+  /*
+   * Draws an SVG line from its middle out to both ends. The path needs pathLength="1".
+   * The visible dash has length p and starts at 0.5 - p/2, so it stays centered while p goes from 0 to 1.
+   */
+  --animate-draw-out: draw-out 1.6s var(--ease-in-out-sine) 0.9s both;
+
+  @keyframes draw-out {
+    from { stroke-dasharray: 0 1; stroke-dashoffset: -0.5; }
+    to { stroke-dasharray: 1 0; stroke-dashoffset: 0; }
+  }
+
+  @keyframes settle {
+    from { transform: scale(1.08); }
+    to { transform: scale(1); }
+  }
+
+  @keyframes header-in {
+    from { opacity: 0; translate: 0 -0.75rem; }
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(1.25rem); filter: blur(10px); }
+    to { opacity: 1; transform: none; filter: blur(0); }
+  }
+}
+
+/*
+ * Backup faces shown while Jost and Gilda Display load, resized so text takes the same space and nothing moves
+ * when the real font arrives. Astro generates the same faces, but only with `local("Arial")` and
+ * `local("Times New Roman")`, which Linux and Android do not have. These list the fonts with the same letter
+ * widths there too: Liberation and Arimo/Tinos (Linux, ChromeOS) and Roboto (Android).
+ * The size and line metrics are copied from Astro's generated faces. Update them if a font or its weights change.
+ */
+@font-face {
+  font-family: "Jost fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("LiberationSans"), local("Arimo"), local("Roboto"), local("Roboto-Regular");
+  font-weight: 300 500;
+  size-adjust: 96.007%;
+  ascent-override: 111.45%;
+  descent-override: 39.0596%;
+  line-gap-override: 0%;
+}
+
+/*
+ * Capital letters A–Z only. Jost's capitals are narrower than Arial's, and the size above is matched to
+ * lowercase, so all-caps text such as the header links came out about 2% wider and shifted when Jost loaded.
+ * Size measured against the header links. The line metrics keep the same effective values as the face above:
+ * each is the face above's value × 96.007 / 91.64. This face must come after the one above to win for A–Z.
+ */
+@font-face {
+  font-family: "Jost fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("LiberationSans"), local("Arimo"), local("Roboto"), local("Roboto-Regular");
+  font-weight: 300 500;
+  unicode-range: U+0041-005A;
+  size-adjust: 91.64%;
+  ascent-override: 116.76%;
+  descent-override: 40.92%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Gilda Display fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"), local("Liberation Serif"), local("LiberationSerif"), local("Tinos");
+  font-weight: 400;
+  size-adjust: 111.015%;
+  ascent-override: 80.3492%;
+  descent-override: 25.6721%;
+  line-gap-override: 0%;
 }
 
 @layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  /* No elastic bounce at the top and bottom of the page with a mouse or trackpad. Touch screens keep it. */
+  @media (pointer: fine) {
+    html, body {
+      overscroll-behavior-y: none;
+    }
+  }
   body {
-    @apply bg-moon-cream text-moon-ink;
+    @apply bg-moon-cream font-sans text-[1.0625rem] leading-[1.75] font-light text-moon-ink;
+  }
+  h1, h2, h3 {
+    @apply font-display font-normal text-balance text-moon-navy;
   }
   a {
-    @apply text-moon-navy underline;
+    @apply text-moon-navy underline decoration-1 underline-offset-4;
   }
+  ::selection {
+    @apply bg-moon-mist text-moon-ink;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-4 outline-moon-blue;
+  }
+}
+
+/* A word in the hand-lettered script, set inside a serif heading. */
+@utility script {
+  @apply font-script text-[1.45em] leading-[0] tracking-normal normal-case;
+}
+
+/* Small tracked capitals for labels, buttons and navigation. */
+@utility caps {
+  @apply font-sans text-xs font-normal tracking-caps uppercase;
+}
+
+@utility button {
+  @apply caps inline-flex min-h-12 items-center justify-center px-8 py-3 no-underline transition-colors duration-300;
+}
+@utility button-solid {
+  @apply button bg-moon-navy text-moon-cream hover:bg-moon-ink;
+}
+@utility button-light {
+  @apply button bg-moon-cream text-moon-ink hover:bg-white;
+}
+@utility button-outline {
+  @apply button border border-current hover:bg-moon-cream/10;
+}
+
+/*
+ * Navigation link. A line grows in from the left on hover, focus, or tap, and leaves to the right.
+ * The current page keeps its line.
+ * Set on the link to adjust the line:
+ * - `--nav-link-trim`: how far the line stops short of the end. Set it to the letter spacing,
+ *   so trailing letter spacing doesn't extend the line past the text.
+ * - `--nav-link-offset`: the line's `bottom` position.
+ */
+@utility nav-link {
+  position: relative;
+  text-decoration: none;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0 var(--nav-link-trim, 0);
+    bottom: var(--nav-link-offset, -0.4rem);
+    height: 1px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 600ms var(--ease-out-expo);
+  }
+
+  &[aria-current="page"]::after,
+  &:focus-visible::after,
+  &:active::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  @media (hover: hover) {
+    &:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+  }
+
+  /* When a popover menu opens, the current page's line draws in. Touch screens have no hover, so this shows the effect there. */
+  :popover-open &[aria-current="page"]::after {
+    animation: nav-link-line-in 900ms var(--ease-out-expo) 300ms both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &::after,
+    :popover-open &[aria-current="page"]::after {
+      transition: none;
+      animation: none;
+    }
+  }
+}
+
+@keyframes nav-link-line-in {
+  from { transform: scaleX(0); }
+}
+
+/* The logo's wordmark, cut out as a mask so it takes the current text color. */
+@utility wordmark {
+  aspect-ratio: 1200 / 107;
+  background-color: currentColor;
+  mask: url("/brand/wordmark.png") no-repeat center / contain;
+  forced-color-adjust: none;
 }

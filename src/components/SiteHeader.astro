@@ -1,0 +1,72 @@
+---
+/*
+ * The site header in one of two looks:
+ * - `overlay`: transparent with cream text, placed over the top of a hero. It fades out once the page
+ *   scrolls and fades back in at the top.
+ * - `solid`: white with navy text, and a little more compact. It sticks to the top of the screen.
+ *
+ * The visible header fades in on page load. Pages with a hero get both: the overlay header, plus a `floating` solid header that stays hidden
+ * until the hero is scrolled away (the script in Base.astro sets `data-shown`). The two never change
+ * into each other. Each only fades in or out, so a fast scroll back to the top crossfades them.
+ */
+interface Props {
+	nav: { href: string; label: string }[];
+	variant: "overlay" | "solid";
+	/** Solid only. Fixed and hidden until `data-shown` is set, instead of sticky and always visible. */
+	floating?: boolean;
+}
+
+const { nav, variant, floating = false } = Astro.props;
+const overlay = variant === "overlay";
+// The floating header is a second copy of the header, so it is not a second banner landmark.
+const Tag = floating ? "div" : "header";
+const current = (href: string) => (Astro.url.pathname === href ? "page" : undefined);
+---
+
+<Tag
+	data-overlay-header={overlay ? "" : undefined}
+	data-floating-header={floating ? "" : undefined}
+	class:list={[
+		"inset-x-0 top-0",
+		// The overlay fades out in place once the page scrolls. The script in Base.astro pins it (`data-pinned`)
+		// and sets `data-away`. Without the script it is not pinned and scrolls away with the page instead.
+		overlay
+			? "absolute z-20 text-moon-cream motion-safe:animate-header-in transition-[opacity,translate] duration-500 ease-out-expo data-pinned:fixed data-away:pointer-events-none data-away:-translate-y-3 data-away:opacity-0"
+			: "z-30 bg-white/95 text-moon-navy shadow-[0_1px_0_var(--color-moon-sand)] backdrop-blur-md",
+		!overlay && !floating && "sticky motion-safe:animate-header-in",
+		// Hidden is also `invisible`, so its links leave the tab order and the accessibility tree.
+		floating &&
+			"invisible fixed -translate-y-3 opacity-0 transition-[opacity,translate,visibility] duration-500 ease-out-expo data-shown:visible data-shown:translate-y-0 data-shown:opacity-100",
+	]}
+>
+	<div
+		class:list={[
+			"mx-auto flex max-w-7xl items-center justify-between gap-8 px-6 md:px-10",
+			overlay ? "py-6 md:py-8" : "py-4 md:py-5",
+		]}
+	>
+		<a href="/" class="text-current" aria-label="New Moon Birth, home">
+			<span class:list={["wordmark block w-40", overlay ? "md:w-52" : "md:w-44"]}></span>
+		</a>
+		<nav aria-label={floating ? "Main, sticky" : "Main"}>
+			<ul class="hidden gap-8 xl:flex">
+				{
+					nav.map((item) => (
+						<li>
+							<a
+								href={item.href}
+								aria-current={current(item.href)}
+								class="caps nav-link text-current [--nav-link-trim:var(--tracking-caps)]"
+							>
+								{item.label}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+			<button type="button" popovertarget="site-menu" class="caps -m-3 cursor-pointer p-3 xl:hidden">
+				Menu
+			</button>
+		</nav>
+	</div>
+</Tag>

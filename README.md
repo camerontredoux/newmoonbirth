@@ -2,17 +2,19 @@
 
 Website for New Moon Birth, the doula practice of Starlee Brown. Starlee is based in Washougal, WA. She serves north Oregon and southwest Washington: Portland and Gresham, OR, and Vancouver, Camas, and Washougal, WA.
 
-The site is the landing page for all business inquiries. It explains doula services, shows a photo gallery, and lets clients send a message, book a consultation, and get billing help.
+The site is the landing page for all business inquiries. It explains doula services and lets clients send a message, book a consultation, and get billing help.
 
 Live site: https://newmoonbirth.com
 
 ## Status
 
-The pages are unstyled placeholders. Only the color palette is set. The final design is still to come.
+The home page, header, and footer are designed. The other pages are unstyled placeholders inside the shared header and footer.
 
 | Feature | Status |
 | :-- | :-- |
-| Pages and navigation | Placeholder content |
+| Home page | Designed. Copy is a draft for Starlee to review. Photos are stock stand-ins. |
+| Other pages | Placeholder content |
+| Navigation | Done. Below 1280px wide, a **Menu** button opens a full-screen menu. |
 | Color palette | Done, taken from the logo |
 | Contact form | Form only. It does not send yet. A Cloudflare Worker will send the email. |
 | Booking | Not added. A Calendly embed goes on the Contact page. |
@@ -61,26 +63,30 @@ Use `pnpm run deploy`, not `pnpm deploy`. `pnpm deploy` is a different, built-in
 ```text
 public/
   logo.png                 Square logo, 2000 x 2000
-  logo-wide.png            Wide logo with the name beside the moon. Used in the header.
+  logo-wide.png            Wide logo with the name beside the moon. Not used on a page.
+  brand/wordmark.png       "NEW MOON BIRTH" cut from logo.png as a transparent mask. The header and footer use it.
   favicon.ico, favicon-32.png, apple-touch-icon.png, icon-192.png, icon-512.png
                            Moon icons cut from logo.png. site.webmanifest lists the large ones.
   contact-card.png         Contact card image. Not used on a page yet.
 src/
+  assets/
+    moon-mark.png          Moon cut from logo.png with a transparent background
+    photos/                Stock photos. SOURCES.md lists where each one came from.
   components/
     ContactForm.tsx        React island for the contact form
+    SiteHeader.astro       Site header: transparent over a hero, or white and sticky
   layouts/
-    Base.astro             Shared page shell: header, navigation, footer
+    Base.astro             Shared page shell: header, mobile menu, footer. A page that fills the `hero` slot gets a transparent header over the hero that fades out once the page scrolls, and a white header that fades in after the hero. On other pages the white header is sticky.
   pages/                   One file per route
     404.astro              Page for missing URLs
     index.astro            /
     what-is-a-doula.astro  /what-is-a-doula/
     services.astro         /services/
     about.astro            /about/
-    gallery.astro          /gallery/
     contact.astro          /contact/
     billing.astro          /billing/
   styles/
-    global.css             Tailwind import and color palette
+    global.css             Tailwind import, color palette, fonts, and shared utilities
 wrangler.jsonc             Cloudflare Worker and custom domain config
 ```
 
@@ -99,6 +105,27 @@ The colors come from the logo. They are Tailwind theme colors in `src/styles/glo
 | `moon-blue` | `#5f7ea8` | Mid blue |
 | `moon-navy` | `#3b5683` | Brand navy, from the wordmark. Used for links. |
 | `moon-ink` | `#26364f` | Body text |
+
+## Fonts
+
+Astro's font loader downloads the fonts from Google Fonts at build time and serves them from the site. `astro.config.mjs` lists them.
+
+| Tailwind class | Font | Use |
+| :-- | :-- | :-- |
+| `font-display` | Gilda Display | Headings |
+| `font-script` | Corinthia | Single script words inside headings. Use the `script` class. |
+| `font-sans` | Jost, weights 300 to 500 | Body text, buttons, and navigation |
+
+`global.css` also defines these utilities:
+
+- `script`: sets a word in Corinthia at the right size inside a heading.
+- `caps`: small, spaced capitals for labels, buttons, and navigation.
+- `button-solid`, `button-light`, `button-outline`: the three button styles.
+- `wordmark`: shows the logo wordmark in the current text color.
+
+## Images
+
+Put photos in `src/assets/` and use Astro's `<Picture>` or `<Image>` component. The build makes AVIF and WebP copies at several widths with sharp. `astro.config.mjs` sets `imageService: 'compile'` for this, because every page is static.
 
 ## Type checking
 
