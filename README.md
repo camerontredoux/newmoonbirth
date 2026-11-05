@@ -1,43 +1,115 @@
-# Astro Starter Kit: Minimal
+# New Moon Birth
 
-```sh
-pnpm create astro@latest -- --template minimal
-```
+Website for New Moon Birth, the doula practice of Starlee Brown. Starlee is based in Washougal, WA. She serves north Oregon and southwest Washington: Portland and Gresham, OR, and Vancouver, Camas, and Washougal, WA.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+The site is the landing page for all business inquiries. It explains doula services, shows a photo gallery, and lets clients send a message, book a consultation, and get billing help.
 
-## 🚀 Project Structure
+Live site: https://newmoonbirth.com
 
-Inside of your Astro project, you'll see the following folders and files:
+## Status
+
+The pages are unstyled placeholders. Only the color palette is set. The final design is still to come.
+
+| Feature | Status |
+| :-- | :-- |
+| Pages and navigation | Placeholder content |
+| Color palette | Done, taken from the logo |
+| Contact form | Form only. It does not send yet. A Cloudflare Worker will send the email. |
+| Booking | Not added. A Calendly embed goes on the Contact page. |
+| Billing | Explanation only. An optional Stripe or Square invoice link goes on the Billing page. |
+
+## Stack
+
+- [Astro](https://docs.astro.build) for pages.
+- React for interactive parts, loaded as Astro islands. An island is a component that runs in the browser while the rest of the page stays static HTML.
+- Tailwind CSS v4.
+- TypeScript `7.1.0-beta`.
+- pnpm.
+- Cloudflare Workers for hosting, through the `@astrojs/cloudflare` adapter.
+
+## Setup
+
+1. Install dependencies:
+
+   ```sh
+   pnpm install
+   ```
+
+2. Create a `.env` file in the project root with the Cloudflare credentials. You need these only to deploy.
+
+   ```sh
+   CLOUDFLARE_ACCOUNT_ID=...
+   CLOUDFLARE_API_TOKEN=...
+   ```
+
+   Git ignores `.env`. Do not commit it.
+
+## Commands
+
+| Command | Action |
+| :-- | :-- |
+| `pnpm dev` | Starts the dev server at `localhost:4321`. |
+| `pnpm check` | Type-checks all `.ts`, `.tsx`, and `.astro` files. |
+| `pnpm build` | Builds the site into `dist/`. |
+| `pnpm preview` | Builds the site and runs it locally in the Workers runtime. |
+| `pnpm run deploy` | Builds the site and deploys it to Cloudflare. |
+
+Use `pnpm run deploy`, not `pnpm deploy`. `pnpm deploy` is a different, built-in pnpm command.
+
+## Project structure
 
 ```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+public/
+  logo.png                 Logo
+src/
+  components/
+    ContactForm.tsx        React island for the contact form
+  layouts/
+    Base.astro             Shared page shell: header, navigation, footer
+  pages/                   One file per route
+    index.astro            /
+    what-is-a-doula.astro  /what-is-a-doula/
+    services.astro         /services/
+    about.astro            /about/
+    gallery.astro          /gallery/
+    contact.astro          /contact/
+    billing.astro          /billing/
+  styles/
+    global.css             Tailwind import and color palette
+wrangler.jsonc             Cloudflare Worker and custom domain config
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+To add a page, create a file in `src/pages/`. Wrap its content in the `Base` layout. Then add a link to the `nav` list in `src/layouts/Base.astro`.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Color palette
 
-Any static assets, like images, can be placed in the `public/` directory.
+The colors come from the logo. They are Tailwind theme colors in `src/styles/global.css`, so you can use them as classes such as `bg-moon-cream` or `text-moon-navy`.
 
-## 🧞 Commands
+| Name | Hex | Use |
+| :-- | :-- | :-- |
+| `moon-cream` | `#f6f1e7` | Page background |
+| `moon-sand` | `#e8dcc4` | Warm beige |
+| `moon-gold` | `#c9b48a` | Muted gold accent |
+| `moon-mist` | `#b9c6d6` | Pale blue |
+| `moon-blue` | `#5f7ea8` | Mid blue |
+| `moon-navy` | `#3b5683` | Brand navy, from the wordmark. Used for links. |
+| `moon-ink` | `#26364f` | Body text |
 
-All commands are run from the root of the project, from a terminal:
+## Type checking
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+`astro check` does not support TypeScript 7. This project uses the experimental `@astrojs/ts-content-mapper` package instead. It lets `tsc` type-check `.astro` files.
 
-## 👀 Want to learn more?
+- `tsconfig.json` registers the mapper under `contentMappers`.
+- `pnpm check` runs `tsc --noEmit --runExternalCode`. The `--runExternalCode` flag is required because the mapper runs code from `node_modules`.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+If the mapper causes problems, switch to TypeScript 6 and `astro check`.
+
+## Hosting and domain
+
+The site runs on Cloudflare Workers as the `newmoonbirth` Worker.
+
+- `wrangler.jsonc` attaches `newmoonbirth.com` and `www.newmoonbirth.com` as custom domains. Cloudflare creates their DNS records and HTTPS certificates.
+- A Single Redirect rule in the Cloudflare dashboard sends `www.newmoonbirth.com/*` to `https://newmoonbirth.com/${1}` with a 301. It keeps the path and query string. This rule is not in the repo. To change it, open the `newmoonbirth.com` zone in the dashboard and go to **Rules**.
+- The zone also has email records (MX, SPF, DKIM) for Cloudflare Email Routing. Do not remove them.
+
+All pages are static. The build makes an assets-only Worker, so Worker code does not run yet. That changes when the site gets a server route, such as the contact form endpoint.
