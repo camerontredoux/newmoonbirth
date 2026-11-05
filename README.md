@@ -60,7 +60,9 @@ Use `pnpm run deploy`, not `pnpm deploy`. `pnpm deploy` is a different, built-in
 
 ```text
 public/
-  logo.png                 Logo
+  logo.png                 Square logo, 2000 x 2000
+  logo-wide.png            Wide logo with the name beside the moon. Used in the header.
+  contact-card.png         Contact card image. Not used on a page yet.
 src/
   components/
     ContactForm.tsx        React island for the contact form
