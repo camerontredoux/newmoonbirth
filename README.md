@@ -162,7 +162,9 @@ All pages are static. The build makes an assets-only Worker, so Worker code does
 
 ## Analytics
 
-`Base.astro` loads Google Tag Manager container `GTM-M4ZZJLF8` on every page. The scripts use `is:inline`, so Astro adds them to the page unchanged. Add or change tags, such as Google Analytics, in the Tag Manager dashboard, not in the code.
+The site uses Cloudflare Web Analytics. It uses no cookies and does not track individual visitors. Cloudflare adds the beacon script to each page at the edge, because automatic setup is on for the `newmoonbirth.com` zone. Do not add the script to the code too, or each visit counts twice. See the numbers in the Cloudflare dashboard under **Analytics & Logs** > **Web Analytics**.
+
+Do not add Google Tag Manager, Google Analytics, or ad pixels without legal review. Washington's My Health My Data Act can treat visits to a doula site as consumer health data. That data needs visitor consent and a separate privacy policy.
 
 ## Deploys
 
