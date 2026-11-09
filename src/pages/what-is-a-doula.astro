@@ -2,6 +2,7 @@
 import { Picture } from "astro:assets";
 import ArchPhoto from "../components/ArchPhoto.astro";
 import MoonPhase from "../components/MoonPhase.astro";
+import PencilFrame from "../components/PencilFrame.astro";
 import Base from "../layouts/Base.astro";
 import handsPhoto from "../assets/photos/hands-blanket.jpg";
 import teaPhoto from "../assets/photos/tea-blanket.jpg";
@@ -29,8 +30,7 @@ const findings = [
 const phases = [
 	{
 		moon: "moon-new",
-		phase: "New moon",
-		title: "A first conversation",
+		title: "Consultation",
 		photo: teaPhoto,
 		alt: "A mustard mug of tea on a saucer, set on a chunky cream knit blanket",
 		crop: "object-[50%_35%]",
@@ -38,7 +38,6 @@ const phases = [
 	},
 	{
 		moon: "moon-waxing",
-		phase: "Waxing moon",
 		title: "Pregnancy",
 		photo: bellySupportPhoto,
 		alt: "A woman in a linen dress rests her hands on a pregnant woman’s belly in a sunny room",
@@ -47,7 +46,6 @@ const phases = [
 	},
 	{
 		moon: "moon-full",
-		phase: "Full moon",
 		title: "Birth",
 		photo: babyHandPhoto,
 		alt: "A newborn’s hand wraps around a parent’s finger",
@@ -56,7 +54,6 @@ const phases = [
 	},
 	{
 		moon: "moon-waning",
-		phase: "Waning moon",
 		title: "Postpartum",
 		photo: newbornChestPhoto,
 		alt: "A newborn sleeps on a parent’s shoulder",
@@ -146,23 +143,25 @@ const phases = [
 				{
 					phases.map((step, i) => (
 						<li style={`--reveal-step: ${i}`} class="reveal hover-sketch">
-							<div data-light class="relative overflow-hidden">
-								<Picture
-									src={step.photo}
-									alt={step.alt}
-									widths={[400, 640, 840]}
-									sizes="(min-width: 1024px) 16rem, (min-width: 768px) 45vw, 100vw"
-									formats={formats}
-									class:list={[step.crop, "aspect-4/3 w-full object-cover md:aspect-4/5"]}
-								/>
-								<span aria-hidden="true" class="moonlight"></span>
+							<div class="relative">
+								<div data-light class="relative overflow-hidden">
+									<Picture
+										src={step.photo}
+										alt={step.alt}
+										widths={[400, 640, 840]}
+										sizes="(min-width: 1024px) 16rem, (min-width: 768px) 45vw, 100vw"
+										formats={formats}
+										class:list={[step.crop, "aspect-4/3 w-full object-cover md:aspect-4/5"]}
+									/>
+									<span aria-hidden="true" class="moonlight"></span>
+								</div>
+								<PencilFrame />
 							</div>
 							<div class="mt-8 flex items-center gap-4">
 								<MoonPhase id={`phase-${i}`} class={`${step.moon} size-9 shrink-0 text-moon-navy`} />
-								<p class="caps">{step.phase}</p>
+								<h3 class="caps">{step.title}</h3>
 							</div>
-							<h3 class="mt-5 text-[clamp(1.75rem,1.5rem+0.8vw,2.25rem)] leading-[1.15]">{step.title}</h3>
-							<p class="mt-4 max-w-sm">{step.text}</p>
+							<p class="mt-5 max-w-sm">{step.text}</p>
 						</li>
 					))
 				}

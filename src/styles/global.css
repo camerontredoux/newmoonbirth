@@ -150,7 +150,7 @@
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    background: radial-gradient(circle 5rem at var(--light-at), var(--button-glow), transparent);
+    background: radial-gradient(circle 16rem at var(--light-at), var(--button-glow), transparent);
     opacity: 0;
     transition: opacity 400ms var(--ease-out-expo);
   }
@@ -171,7 +171,7 @@
 }
 @utility button-outline {
   @apply button border border-current hover:bg-moon-cream/10;
-  --button-glow: color-mix(in oklab, currentColor 30%, transparent);
+  --button-glow: color-mix(in oklab, var(--color-moon-mist) 85%, transparent);
 }
 
 /*
@@ -303,6 +303,47 @@
   opacity: 0.3;
 }
 
+/*
+ * Pencil frame: see PencilFrame.astro. Each stroke draws in as the frame scrolls into view, one after the other, and
+ * is done by the time the whole frame is on screen. Without scroll-driven animation support, or with reduced motion,
+ * the frame shows complete.
+ */
+.pencil-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  fill: none;
+  stroke: var(--color-moon-navy);
+  stroke-linecap: round;
+
+  & path {
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+    opacity: 0.6;
+  }
+
+  & .pencil-frame-second {
+    opacity: 0.3;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .pencil-frame {
+      view-timeline: --pencil-frame block;
+    }
+
+    .pencil-frame path {
+      animation: pencil-frame-in linear both;
+      animation-timeline: --pencil-frame;
+      animation-range: entry calc(10% + var(--stroke-step) * 10%) entry calc(50% + var(--stroke-step) * 10%);
+    }
+  }
+}
+
 .moon-new { --moon-wax: 0; --moon-wane: 0; }
 .moon-waxing { --moon-wax: 0.4; --moon-wane: 0; }
 .moon-full { --moon-wax: 1; --moon-wane: 0; }
@@ -414,7 +455,8 @@
 }
 
 /*
- * Moonlight: hover effects for a mouse, where light follows the cursor. Touch screens get none of them.
+ * Moonlight: hover effects for a mouse, where light follows the cursor. Touch screens get none of them, and see only
+ * the even glow on photos.
  * Base.astro's script gives each element marked `data-light`, and each button, the cursor's position over it as
  * `--light-x` and `--light-y`: 0 at its left or top edge and 1 at its right or bottom edge, and past those outside it.
  * `--light-at` is the same position for a gradient.
@@ -425,19 +467,35 @@
 }
 
 /*
- * A soft glow around the inside edges of a photo, brightest on the side nearest the cursor. Put it last inside the
- * photo's `data-light` box. It takes the box's corner rounding, so it follows an arched top.
+ * A soft glow around the inside edges of a photo. It is always there, even all the way round (`::before`). With a
+ * mouse over the photo, it crossfades to a glow that is brightest on the side nearest the cursor (`::after`). Put it
+ * last inside the photo's `data-light` box. It takes the box's corner rounding, so it follows an arched top.
  */
 .moonlight {
   position: absolute;
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  box-shadow: inset 0 0 3rem 0.75rem color-mix(in oklab, var(--color-moon-cream) 75%, transparent);
   mix-blend-mode: screen;
-  mask-image: radial-gradient(circle 26rem at var(--light-at), black, rgb(0 0 0 / 0.3));
-  opacity: 0;
-  transition: opacity 700ms var(--ease-out-expo);
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 3rem 0.75rem color-mix(in oklab, var(--color-moon-cream) 75%, transparent);
+    transition: opacity 700ms var(--ease-out-expo);
+  }
+
+  &::before {
+    opacity: 0.6;
+  }
+
+  &::after {
+    mask-image: radial-gradient(circle 26rem at var(--light-at), black, rgb(0 0 0 / 0.3));
+    opacity: 0;
+  }
 }
 
 /* The four-point stars on a photo's frame or beside a list item twinkle while it is hovered. */
@@ -489,10 +547,14 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  [data-light]:hover > .moonlight,
+  [data-light]:hover > .moonlight::after,
   .area-map:hover .area-map-light,
   .wordmark[data-light]:hover::before {
     opacity: 1;
+  }
+
+  [data-light]:hover > .moonlight::before {
+    opacity: 0;
   }
 
   .area-map-town:hover .area-map-dot {
@@ -533,6 +595,10 @@
       animation-delay: 0.25s;
     }
 
+    .hover-sketch:hover .pencil-frame path {
+      animation: sketch-draw 0.5s var(--ease-in-out-sine) calc(var(--stroke-step) * 0.12s) both;
+    }
+
     footer:hover .footer-moon {
       --moon-side: clamp(-1, (var(--light-x) - 0.5) / 2, 1);
       --moon-wax: calc(1 - max(var(--moon-side), 0) * 0.85);
@@ -546,6 +612,16 @@
  * The stroke fades in over the first 2%, so the round cap does not show a dot before the line starts.
  */
 @keyframes sketch-draw {
+  from { stroke-dasharray: 0 1; stroke-opacity: 0; }
+  2% { stroke-opacity: 1; }
+  to { stroke-dasharray: 1 0; }
+}
+
+/*
+ * The same drawing under a second name, for a pencil frame scrolling into view. Hovering switches the frame to
+ * `sketch-draw`, and a CSS animation only starts over when its name changes.
+ */
+@keyframes pencil-frame-in {
   from { stroke-dasharray: 0 1; stroke-opacity: 0; }
   2% { stroke-opacity: 1; }
   to { stroke-dasharray: 1 0; }
