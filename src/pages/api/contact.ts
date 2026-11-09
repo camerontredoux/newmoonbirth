@@ -62,7 +62,8 @@ export const POST: APIRoute = async ({ request }) => {
 			text: `${details}\n\n${message}\n\nSent from the contact form at newmoonbirth.com. Reply to this email to answer ${oneLine(name)}.\n`,
 		});
 	} catch (error) {
-		console.error("Contact form email failed", error);
+		// Logging the error object alone shows only its stack trace, without Cloudflare's reason.
+		console.error("Contact form email failed:", String(error), (error as { code?: unknown } | null)?.code ?? "");
 		return reply(
 			{
 				ok: false,

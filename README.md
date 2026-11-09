@@ -13,7 +13,7 @@ The home page, header, and footer are designed. The other pages are unstyled pla
 | Feature | Status |
 | :-- | :-- |
 | Home page | Designed. Copy is a draft for Starlee to review. Photos are stock stand-ins. |
-| Other pages | What is a doula, Services, and Contact are designed, with copy from Starlee's brochure. The package price is a sliding scale (`price` in `services.astro`). |
+| Other pages | What is a doula, Services, and Contact are designed, with copy from Starlee's brochure. The package price is a sliding scale (`packagePrice` in `src/lib/price.ts`). |
 | Navigation | Done. Below 1280px wide, a **Menu** button opens a full-screen menu. |
 | Color palette | Done, taken from the logo |
 | Contact form | Posts to `/api/contact/`, which checks a honeypot field and Cloudflare Turnstile, then emails Starlee through Cloudflare Email Routing. Production needs the Worker secrets below. |

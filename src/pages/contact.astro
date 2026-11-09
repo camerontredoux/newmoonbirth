@@ -1,8 +1,7 @@
 ---
 import ContactForm from "../components/ContactForm";
 import Base from "../layouts/Base.astro";
-
-const towns = ["Portland", "Gresham", "Vancouver", "Camas", "Washougal"];
+import { packagePrice } from "../lib/price";
 ---
 
 <Base
@@ -32,8 +31,8 @@ const towns = ["Portland", "Gresham", "Vancouver", "Camas", "Washougal"];
 						</dd>
 					</div>
 					<div>
-						<dt class="caps">Serving</dt>
-						<dd class="mt-2">{towns.join(" · ")}</dd>
+						<dt class="caps">Sliding scale</dt>
+						<dd class="mt-2 font-display text-2xl text-moon-navy">{packagePrice}</dd>
 					</div>
 				</dl>
 			</div>
