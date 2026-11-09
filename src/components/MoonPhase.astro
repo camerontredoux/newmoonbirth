@@ -41,8 +41,6 @@ const { id, class: className, style } = Astro.props;
 			<circle r="49" fill="black" class="moon-phase-wane"></circle>
 		</mask>
 	</defs>
-	<!-- Two pencil passes, the second a little off, as if sketched by hand. -->
-	<circle r="48" pathLength="1" class="moon-phase-ring"></circle>
-	<circle r="47.5" cx="0.6" cy="-0.5" pathLength="1" class="moon-phase-ring moon-phase-ring-second"></circle>
 	<circle r="48" fill={`url(#${id}-wash)`} filter={`url(#${id}-bloom)`} mask={`url(#${id}-lit)`}></circle>
+	<circle r="48" class="moon-phase-ring"></circle>
 </svg>

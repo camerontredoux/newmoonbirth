@@ -299,10 +299,6 @@
   opacity: 0.6;
 }
 
-.moon-phase-ring-second {
-  opacity: 0.3;
-}
-
 .moon-new { --moon-wax: 0; --moon-wane: 0; }
 .moon-waxing { --moon-wax: 0.4; --moon-wane: 0; }
 .moon-full { --moon-wax: 1; --moon-wane: 0; }
@@ -419,7 +415,7 @@
  * Base.astro's script gives each element marked `data-light`, and each button, the cursor's position over it as
  * `--light-x` and `--light-y`: 0 at its left or top edge and 1 at its right or bottom edge, and past those outside it.
  * `--light-at` is the same position for a gradient.
- * With reduced motion, the soft lights still follow the cursor, but nothing moves, twinkles or redraws.
+ * With reduced motion, the soft lights still follow the cursor, but nothing moves or twinkles.
  */
 [data-light] {
   --light-at: calc(var(--light-x, 0.5) * 100%) calc(var(--light-y, 0.5) * 100%);
@@ -543,15 +539,6 @@
 
     .hover-twinkle:hover .star ~ .star {
       animation-delay: 0.8s;
-    }
-
-    /* Hovering the item sketches its moon's pencil outline again, one pass after the other. */
-    .hover-sketch:hover .moon-phase-ring {
-      animation: sketch-draw 1.1s var(--ease-in-out-sine) both;
-    }
-
-    .hover-sketch:hover .moon-phase-ring-second {
-      animation-delay: 0.25s;
     }
 
     footer:hover .footer-moon {
