@@ -25,7 +25,7 @@ const { src, alt, sizes, crop = "object-center", class: className } = Astro.prop
 		<Picture
 			src={src}
 			alt={alt}
-			widths={[400, 640, 960]}
+			widths={[400, 640, 960, 1280]}
 			sizes={sizes}
 			formats={["avif", "webp"]}
 			class:list={[crop, "aspect-3/4 w-full object-cover"]}
