@@ -4,7 +4,7 @@ Except for `meet-starlee.jpg`, all photos are stock photos from [Pexels](https:/
 
 | File | Used for | Source |
 | :-- | :-- | :-- |
-| `hero-linen.jpg` | Hero | https://www.pexels.com/photo/5853196/ |
+| `hero-hands.jpg` | Hero | https://www.pexels.com/photo/10162325/ (Yaroslava Bondareva) |
 | `meet-starlee.jpg` | "Hello, I’m Starlee" on the home page | Starlee’s own photo |
 | `tea-blanket.jpg` | What is a doula page, "Support through every phase": a first conversation | https://www.pexels.com/photo/6690220/ |
 | `pregnancy-hands.jpg` | What is a doula page, "Support through every phase": pregnancy | https://www.pexels.com/photo/25559069/ |
