@@ -60,7 +60,7 @@ export const POST: APIRoute = async ({ request }) => {
 			to: env.CONTACT_EMAIL_TO,
 			replyTo: { name: oneLine(name), email },
 			subject: `New message from ${oneLine(name)}`,
-			text: `${details}\n\n${message}\n\nSent from the contact form at newmoonbirth.com. Reply to this email to answer ${oneLine(name)}.\n`,
+			text: `${details}\n\n${message}\n`,
 		});
 	} catch (error) {
 		// Logging the error object alone shows only its stack trace, without Cloudflare's reason.
