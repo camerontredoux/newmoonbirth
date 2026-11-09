@@ -1,5 +1,6 @@
 ---
-import { Font } from "astro:assets";
+import { Font, Picture } from "astro:assets";
+import moonMark from "../assets/moon-mark.png";
 import Logo from "../components/Logo.astro";
 import MoonPhase from "../components/MoonPhase.astro";
 import SiteHeader from "../components/SiteHeader.astro";
@@ -228,9 +229,13 @@ const invite = Astro.url.pathname !== "/contact/";
 					)
 				}
 				<div class="grid gap-12 py-16 sm:grid-cols-2 md:py-20 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:gap-10">
-					<p class="max-w-xs font-display text-2xl leading-snug text-moon-cream">
-						Birth doula support in north Oregon and southwest Washington.
-					</p>
+					<div>
+						<p class="max-w-xs font-display text-2xl leading-snug text-moon-cream">
+							With you from the first flutter to the fourth trimester.
+						</p>
+						{/* One copy, 4x its size, so it stays sharp when someone zooms in. */}
+						<Picture src={moonMark} alt="" width={320} formats={["avif", "webp"]} class="mt-10 h-auto w-20" />
+					</div>
 					<nav aria-labelledby="footer-explore">
 						<h2 id="footer-explore" class="caps text-moon-mist">Explore</h2>
 						<ul class="mt-6 space-y-3">
