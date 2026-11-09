@@ -59,7 +59,7 @@ export const POST: APIRoute = async ({ request }) => {
 			from: { name: "New Moon Birth", email: "contact@newmoonbirth.com" },
 			to: env.CONTACT_EMAIL_TO,
 			replyTo: { name: oneLine(name), email },
-			subject: `Website message from ${oneLine(name)}`,
+			subject: `New message from ${oneLine(name)}`,
 			text: `${details}\n\n${message}\n\nSent from the contact form at newmoonbirth.com. Reply to this email to answer ${oneLine(name)}.\n`,
 		});
 	} catch (error) {
