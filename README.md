@@ -13,7 +13,7 @@ The home page, header, and footer are designed. The other pages are unstyled pla
 | Feature | Status |
 | :-- | :-- |
 | Home page | Designed. Copy is a draft for Starlee to review. Photos are stock stand-ins. |
-| Other pages | What is a doula, Services, About, and Contact are designed, with copy from Starlee's brochure. The package price is not set yet (`price` in `services.astro`). Billing help is still placeholder content. |
+| Other pages | What is a doula, Services, and Contact are designed, with copy from Starlee's brochure. The package price is not set yet (`price` in `services.astro`). Billing help is still placeholder content. |
 | Navigation | Done. Below 1280px wide, a **Menu** button opens a full-screen menu. |
 | Color palette | Done, taken from the logo |
 | Contact form | Posts to `/api/contact/`, which checks a honeypot field and Cloudflare Turnstile, then emails Starlee through Cloudflare Email Routing. Production needs the real Turnstile site key in `src/lib/contact.ts` and the Worker secrets below. |
@@ -73,7 +73,7 @@ Use `pnpm run deploy`, not `pnpm deploy`. `pnpm deploy` is a different, built-in
 public/
   logo.png                 Square logo, 2000 x 2000
   logo-wide.png            Wide logo with the name beside the moon. Not used on a page.
-  brand/wordmark.png       "NEW MOON BIRTH" cut from logo.png as a transparent mask. The header and footer use it.
+  brand/wordmark.svg       "NEW MOON BIRTH" traced from logo.png into a vector mask. The header and footer use it.
   favicon.ico, favicon-32.png, apple-touch-icon.png, icon-192.png, icon-512.png
                            Moon icons cut from logo.png. site.webmanifest lists the large ones.
   contact-card.png         Contact card image. Not used on a page yet.
@@ -92,7 +92,6 @@ src/
     index.astro            /
     what-is-a-doula.astro  /what-is-a-doula/
     services.astro         /services/
-    about.astro            /about/
     contact.astro          /contact/
     billing.astro          /billing/
   styles/

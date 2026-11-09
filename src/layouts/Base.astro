@@ -71,7 +71,7 @@ const structuredData = {
 			name: "Starlee Brown",
 			jobTitle: "Birth doula",
 			worksFor: { "@id": `${Astro.site}#business` },
-			url: new URL("/about/", Astro.site).href,
+			url: Astro.site?.href,
 		},
 	],
 };
@@ -85,7 +85,6 @@ const nav = [
 	{ href: "/", label: "Home" },
 	{ href: "/what-is-a-doula/", label: "What is a doula" },
 	{ href: "/services/", label: "Services" },
-	{ href: "/about/", label: "About" },
 	{ href: "/contact/", label: "Contact & booking" },
 	{ href: "/billing/", label: "Billing help" },
 ];
@@ -212,10 +211,9 @@ const invite = Astro.url.pathname !== "/contact/";
 									Book a free consultation
 								</a>
 							</div>
-							<MoonPhase
-								id="footer-moon"
-								class="footer-moon order-first mx-auto w-28 text-moon-cream md:order-none md:w-full md:max-w-sm"
-							/>
+							<div data-light class="footer-moon order-first mx-auto w-28 md:order-none md:w-full md:max-w-sm">
+								<MoonPhase id="footer-moon" class="w-full text-moon-cream" />
+							</div>
 						</div>
 					)
 				}
@@ -267,7 +265,7 @@ const invite = Astro.url.pathname !== "/contact/";
 						</ul>
 					</div>
 				</div>
-				<span aria-hidden="true" class="wordmark block w-full text-moon-cream"></span>
+				<span aria-hidden="true" data-light class="wordmark relative block w-full text-moon-cream"></span>
 				<div class="caps flex flex-wrap justify-between gap-x-8 gap-y-3 pt-8 pb-10 text-[0.65rem] text-moon-cream/70">
 					<p>© {new Date().getFullYear()} New Moon Birth</p>
 					<p>Washougal, Washington</p>
@@ -300,6 +298,39 @@ const invite = Astro.url.pathname !== "/contact/";
 					// Past the hero once the marker has scrolled up off the screen, not while it is still below.
 					floating.toggleAttribute("data-shown", !entry.isIntersecting && entry.boundingClientRect.top < 0);
 				}).observe(heroEnd);
+			}
+
+			// Moonlight, for a mouse: gives each element marked `data-light`, and each button, the cursor's position over it
+			// as `--light-x` and `--light-y`, from 0 at its left or top edge to 1 at its right or bottom edge. CSS draws the
+			// light. See "Moonlight" in global.css. Scrolling moves the page under a still cursor, so it updates then too.
+			if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
+				let x = 0;
+				let y = 0;
+				let frame = 0;
+				const update = () => {
+					const lit = [...document.querySelectorAll<HTMLElement>("[data-light], .button-solid, .button-light, .button-outline")];
+					const boxes = lit.map((element) => element.getBoundingClientRect());
+					lit.forEach((element, i) => {
+						const { left, top, width, height } = boxes[i];
+						if (!width || !height) return;
+						element.style.setProperty("--light-x", ((x - left) / width).toFixed(3));
+						element.style.setProperty("--light-y", ((y - top) / height).toFixed(3));
+					});
+				};
+				const schedule = () => {
+					cancelAnimationFrame(frame);
+					frame = requestAnimationFrame(update);
+				};
+				addEventListener(
+					"pointermove",
+					(event) => {
+						x = event.clientX;
+						y = event.clientY;
+						schedule();
+					},
+					{ passive: true },
+				);
+				addEventListener("scroll", schedule, { passive: true });
 			}
 		</script>
 	</body>

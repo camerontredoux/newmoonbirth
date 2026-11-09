@@ -4,7 +4,8 @@ import { Picture } from "astro:assets";
 
 /**
  * A photo with an arched top inside a thin navy outline, with two small four-point stars on the outline, like the
- * frames in Starlee's brochure.
+ * frames in Starlee's brochure. With a mouse, light follows the cursor over the photo, the outline leans toward it,
+ * and the stars twinkle. See "Moonlight" in global.css.
  */
 interface Props {
 	src: ImageMetadata;
@@ -21,20 +22,25 @@ const { src, alt, sizes, crop = "object-center", class: className } = Astro.prop
 const star = "M12 0 C12.8 7.5 16.5 11.2 24 12 C16.5 12.8 12.8 16.5 12 24 C11.2 16.5 7.5 12.8 0 12 C7.5 11.2 11.2 7.5 12 0 Z";
 ---
 
-<div class:list={["relative p-3 md:p-4", className]}>
-	<span aria-hidden="true" class="absolute inset-0 rounded-t-full border border-moon-navy/55"></span>
-	<Picture
-		src={src}
-		alt={alt}
-		widths={[400, 640, 960]}
-		sizes={sizes}
-		formats={["avif", "webp"]}
-		class:list={[crop, "relative aspect-3/4 w-full rounded-t-full object-cover"]}
-	/>
-	<svg aria-hidden="true" viewBox="0 0 24 24" class="absolute top-[42%] right-0 size-4 translate-x-1/2 text-moon-navy">
-		<path d={star} fill="currentColor"></path>
-	</svg>
-	<svg aria-hidden="true" viewBox="0 0 24 24" class="absolute top-[78%] left-0 size-3 -translate-x-1/2 text-moon-navy">
-		<path d={star} fill="currentColor"></path>
-	</svg>
+<div data-light class:list={["hover-twinkle relative p-3 md:p-4", className]}>
+	<div data-light class="relative overflow-hidden rounded-t-full">
+		<Picture
+			src={src}
+			alt={alt}
+			widths={[400, 640, 960]}
+			sizes={sizes}
+			formats={["avif", "webp"]}
+			class:list={[crop, "aspect-3/4 w-full object-cover"]}
+		/>
+		<span aria-hidden="true" class="moonlight"></span>
+	</div>
+	<span aria-hidden="true" class="arch-frame pointer-events-none absolute inset-0">
+		<span class="absolute inset-0 rounded-t-full border border-moon-navy/55"></span>
+		<svg viewBox="0 0 24 24" class="star absolute top-[42%] right-0 size-4 translate-x-1/2 text-moon-navy">
+			<path d={star} fill="currentColor"></path>
+		</svg>
+		<svg viewBox="0 0 24 24" class="star absolute top-[78%] left-0 size-3 -translate-x-1/2 text-moon-navy">
+			<path d={star} fill="currentColor"></path>
+		</svg>
+	</span>
 </div>

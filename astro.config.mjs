@@ -14,6 +14,11 @@ export default defineConfig({
   trailingSlash: 'always',
   integrations: [react(), sitemap()],
 
+  // The About page was folded into the home page's "Hello, I'm Starlee" section. Old links land there.
+  redirects: {
+    '/about/': '/',
+  },
+
   fonts: [
     {
       provider: fontProviders.google(),

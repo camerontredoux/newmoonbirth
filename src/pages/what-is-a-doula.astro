@@ -145,15 +145,18 @@ const phases = [
 			<ol class="mt-20 grid gap-x-10 gap-y-16 md:mt-28 md:grid-cols-2 md:gap-x-12 lg:grid-cols-4 lg:gap-x-10">
 				{
 					phases.map((step, i) => (
-						<li style={`--reveal-step: ${i}`} class="reveal">
-							<Picture
-								src={step.photo}
-								alt={step.alt}
-								widths={[400, 640, 840]}
-								sizes="(min-width: 1024px) 16rem, (min-width: 768px) 45vw, 100vw"
-								formats={formats}
-								class:list={[step.crop, "aspect-4/3 w-full object-cover md:aspect-4/5"]}
-							/>
+						<li style={`--reveal-step: ${i}`} class="reveal hover-sketch">
+							<div data-light class="relative overflow-hidden">
+								<Picture
+									src={step.photo}
+									alt={step.alt}
+									widths={[400, 640, 840]}
+									sizes="(min-width: 1024px) 16rem, (min-width: 768px) 45vw, 100vw"
+									formats={formats}
+									class:list={[step.crop, "aspect-4/3 w-full object-cover md:aspect-4/5"]}
+								/>
+								<span aria-hidden="true" class="moonlight"></span>
+							</div>
 							<div class="mt-8 flex items-center gap-4">
 								<MoonPhase id={`phase-${i}`} class={`${step.moon} size-9 shrink-0 text-moon-navy`} />
 								<p class="caps">{step.phase}</p>
