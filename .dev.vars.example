@@ -1,0 +1,6 @@
+# Copy to .dev.vars for `astro dev`. In production, set these with `pnpm exec wrangler secret put <NAME>`.
+
+# Turnstile's test secret, which accepts the test site key in ContactForm.tsx. Production uses the real widget's secret.
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+# Where contact form messages go. It must be a verified destination address in Cloudflare Email Routing.
+CONTACT_EMAIL_TO=you@example.com

@@ -1,17 +1,48 @@
 ---
-import Base from "../layouts/Base.astro";
 import ContactForm from "../components/ContactForm";
+import Base from "../layouts/Base.astro";
+
+const towns = ["Portland", "Gresham", "Vancouver", "Camas", "Washougal"];
 ---
 
 <Base
 	title="Contact & booking"
+	eyebrow="The first conversation is free"
 	description="Contact Starlee Brown at New Moon Birth. Book a free consultation, call 281-995-4078, or send a message about birth doula support."
 >
-	<h2>Starlee Brown, birth doula</h2>
-	<p>Phone: <a href="tel:+12819954078">281-995-4078</a></p>
-	<p>Email: <a href="mailto:starlee@newmoonbirth.com">starlee@newmoonbirth.com</a></p>
-	<h2>Book a free consultation</h2>
-	<p>Placeholder: Calendly embed goes here.</p>
-	<h2>Send a message</h2>
-	<ContactForm client:visible />
+	<Fragment slot="heading">Let’s <span class="script text-moon-blue">connect</span></Fragment>
+
+	<section aria-label="Contact Starlee" class="px-6 pb-28 md:px-10 md:pb-40">
+		<div class="mx-auto grid max-w-6xl items-start gap-16 md:grid-cols-[4fr_7fr] md:gap-20 lg:gap-28">
+			<div class="reveal">
+				<p class="max-w-sm">
+					To book a free consultation or ask a question, send me a message here, or call or email me directly.
+				</p>
+				<dl class="mt-12 space-y-8 border-t border-moon-navy/20 pt-10">
+					<div>
+						<dt class="caps">Phone</dt>
+						<dd class="mt-2 font-display text-2xl text-moon-navy">
+							<a href="tel:+12819954078" class="nav-link [--nav-link-offset:-0.15rem]">281-995-4078</a>
+						</dd>
+					</div>
+					<div>
+						<dt class="caps">Email</dt>
+						<dd class="mt-2 font-display text-2xl text-moon-navy">
+							<a href="mailto:starlee@newmoonbirth.com" class="nav-link break-all [--nav-link-offset:-0.15rem]">starlee@newmoonbirth.com</a>
+						</dd>
+					</div>
+					<div>
+						<dt class="caps">Serving</dt>
+						<dd class="mt-2">{towns.join(" · ")}</dd>
+					</div>
+				</dl>
+			</div>
+			<div class="reveal [--reveal-step:1] bg-white/55 px-6 py-10 shadow-[0_1px_0_var(--color-moon-gold)] sm:px-10 md:py-12">
+				<h2 class="text-[clamp(2rem,1.6rem+1.2vw,2.75rem)] leading-[1.15]">Send a message</h2>
+				<div class="mt-10">
+					<ContactForm client:visible />
+				</div>
+			</div>
+		</div>
+	</section>
 </Base>

@@ -1,12 +1,85 @@
 ---
+import ArchPhoto from "../components/ArchPhoto.astro";
 import Base from "../layouts/Base.astro";
+import handsPhoto from "../assets/photos/hands-blanket.jpg";
+
+// The figures and their wording are from Starlee's brochure, which cites this review.
+const source = {
+	title: "Continuous support for women during childbirth",
+	citation: "Bohren and others, Cochrane Database of Systematic Reviews, 2017",
+	url: "https://doi.org/10.1002/14651858.CD003766.pub6",
+};
+const findings = [
+	{ figure: "25%", text: "Lower risk of cesarean birth." },
+	{ figure: "31%", text: "Lower likelihood of having negative feelings about your birth experience." },
+	{ figure: "41", unit: "minutes", text: "Shorter average labor duration." },
+	{ figure: "8%", text: "Greater likelihood of spontaneous vaginal birth." },
+];
 ---
 
 <Base
 	title="What is a doula"
-	description="What a birth doula does, how a doula differs from a midwife, and answers to common questions about hiring a doula in Portland and southwest Washington."
+	description="What a birth doula does, and the difference continuous support can make in labor and birth. Birth doula support in Portland and southwest Washington."
 >
-	<p>Placeholder: what a doula does, and how a doula differs from a midwife.</p>
-	<h2>FAQ</h2>
-	<p>Placeholder: frequently asked questions.</p>
+	<Fragment slot="heading">What is a birth <span class="script text-moon-blue">doula</span>?</Fragment>
+
+	<section aria-label="What a birth doula does" class="px-6 pb-28 md:px-10 md:pb-40">
+		<div class="mx-auto grid max-w-6xl items-start gap-16 md:grid-cols-[7fr_5fr] md:gap-20 lg:gap-28">
+			<div class="max-w-[36rem] space-y-6">
+				<p class="reveal font-display text-[clamp(1.5rem,1.25rem+0.8vw,2rem)] leading-[1.35] text-moon-navy">
+					A birth doula is someone who provides continuous support throughout pregnancy, labor, and birth. Think of
+					us as an extra set of hands, a familiar face, and someone who’s there just for you.
+				</p>
+				<p class="reveal">
+					From helping you find comfortable positions and offering comfort measures during labor, to answering
+					questions and helping you navigate your options, my role is to support you in whatever ways you need.
+				</p>
+				<p class="reveal">
+					I’m not there to make decisions for you or tell you how your birth should look. I’m there to help you feel
+					informed, cared for, and comfortable making the decisions that feel right for you.
+				</p>
+			</div>
+			<ArchPhoto
+				src={handsPhoto}
+				alt="A baby in a fluffy white suit holds a parent’s finger"
+				sizes="(min-width: 768px) 26rem, 90vw"
+				crop="object-[40%_50%]"
+				class="reveal mx-auto w-full max-w-sm"
+			/>
+		</div>
+	</section>
+
+	<section aria-labelledby="difference-title" class="bg-moon-sand/35 px-6 py-28 md:px-10 md:py-40">
+		<div class="mx-auto max-w-6xl">
+			<div class="reveal grid gap-6 md:grid-cols-2 md:items-end md:gap-20">
+				<h2 id="difference-title" class="text-[clamp(2.5rem,1.75rem+2.4vw,4rem)] leading-[1.1]">
+					The difference a doula can <span class="script text-moon-blue">make</span>
+				</h2>
+				<p class="max-w-md">
+					Whether it’s your first baby or your fifth, having someone dedicated to your comfort, needs, and experience
+					can make a meaningful difference. Research continues to show the benefits of continuous support throughout
+					labor and birth.
+				</p>
+			</div>
+			<dl class="mt-20 grid gap-12 sm:grid-cols-2 md:mt-28 lg:grid-cols-4 lg:gap-10">
+				{
+					findings.map((finding, i) => (
+						<div style={`--reveal-step: ${i}`} class="reveal flex flex-col border-t border-moon-navy/20 pt-8">
+							<dt class="order-last mt-4 max-w-60">{finding.text}</dt>
+							<dd class="font-display text-[clamp(3.5rem,2.75rem+2.4vw,5rem)] leading-none text-moon-navy">
+								{finding.figure}
+								{finding.unit && <span class="caps ml-1 align-middle text-moon-blue">{finding.unit}</span>}
+							</dd>
+						</div>
+					))
+				}
+			</dl>
+			<p class="reveal mt-16 max-w-2xl text-sm text-moon-ink/75">
+				Compared with no continuous support. Source: <a href={source.url} class="underline underline-offset-4 decoration-moon-gold hover:text-moon-navy">{source.title}</a>, {source.citation}.
+			</p>
+			<p class="reveal mt-20 md:mt-24">
+				<a href="/services/" class="button-solid">See the birth support package</a>
+			</p>
+		</div>
+	</section>
 </Base>

@@ -1,59 +1,100 @@
 ---
-import { Image, Picture } from "astro:assets";
+import { Picture } from "astro:assets";
+import ArchPhoto from "../components/ArchPhoto.astro";
+import MoonPhase from "../components/MoonPhase.astro";
+import ServiceAreaMap from "../components/ServiceAreaMap.astro";
 import Base from "../layouts/Base.astro";
-import moon from "../assets/moon-mark.png";
 import heroPhoto from "../assets/photos/hero-linen.jpg";
 import introPhoto from "../assets/photos/meet-starlee.jpg";
-import pregnancyPhoto from "../assets/photos/pregnancy-window.jpg";
-import birthPhoto from "../assets/photos/baby-hand.jpg";
-import postpartumPhoto from "../assets/photos/newborn-chest.jpg";
-import connectPhoto from "../assets/photos/hands-blanket.jpg";
+import teaPhoto from "../assets/photos/tea-blanket.jpg";
+import bellySupportPhoto from "../assets/photos/belly-support.jpg";
+import babyHandPhoto from "../assets/photos/baby-hand.jpg";
+import newbornChestPhoto from "../assets/photos/newborn-chest.jpg";
 
 const formats = ["avif", "webp"];
 
-const stages = [
+// "What a doula does": the three parts of the tagline, each in words from Starlee's brochure.
+const values = [
 	{
+		title: "Calm hands",
+		text: "Help finding comfortable positions, comfort measures, and hands-on support throughout your labor and birth.",
+	},
+	{
+		title: "Clear head",
+		text: "Answers to your questions and help navigating your options, so you feel informed making the decisions that feel right for you.",
+	},
+	{
+		title: "Full heart",
+		text: "Encouragement for you and your birth partner, and someone who’s there just for you.",
+	},
+];
+
+// "Support through every phase". Each step has its own moon phase, and the large moon beside the list matches it.
+// On phones the photos are cropped wider, and `crop` keeps the faces and hands in the frame.
+const phases = [
+	{
+		moon: "moon-new",
+		phase: "New moon",
+		title: "A first conversation",
+		photo: teaPhoto,
+		alt: "A mustard mug of tea on a saucer, set on a chunky cream knit blanket",
+		crop: "object-[50%_35%]",
+		text: "It starts with a free consultation, a chance to ask your questions and see if we’re a good fit.",
+	},
+	{
+		moon: "moon-waxing",
+		phase: "Waxing moon",
 		title: "Pregnancy",
-		photo: pregnancyPhoto,
-		alt: "A pregnant woman in a sheer white gown stands in soft window light",
-		text: "We get to know each other before your baby arrives. We talk through your hopes, your questions, and your birth preferences, so you feel ready.",
+		photo: bellySupportPhoto,
+		alt: "A woman in a linen dress rests her hands on a pregnant woman’s belly in a sunny room",
+		crop: "object-[50%_45%]",
+		text: "Two prenatal visits to get to know each other, talk through your hopes and preferences for birth, and prepare for labor. In between, I’m a text or call away.",
 	},
 	{
+		moon: "moon-full",
+		phase: "Full moon",
 		title: "Birth",
-		photo: birthPhoto,
-		alt: "A newborn's hand wraps around a parent's finger",
-		text: "When labor begins, I come to you and stay. Comfort measures, ideas for positions, steady words, and support for your partner too.",
+		photo: babyHandPhoto,
+		alt: "A newborn’s hand wraps around a parent’s finger",
+		crop: "object-center",
+		text: "I’m on call for the two weeks before your due date. When labor begins, I join you and stay through your labor and birth, with hands-on comfort, encouragement, and support for your birth partner.",
 	},
 	{
+		moon: "moon-waning",
+		phase: "Waning moon",
 		title: "Postpartum",
-		photo: postpartumPhoto,
-		alt: "A newborn sleeps on a parent's shoulder",
-		text: "After your baby is born, I check in on how you are healing, feeding, and resting, and help you settle into life at home.",
+		photo: newbornChestPhoto,
+		alt: "A newborn sleeps on a parent’s shoulder",
+		crop: "object-center",
+		text: "Two postpartum visits to check in, talk about your birth experience, see how you’re doing, and support you as you settle into life with your new baby.",
 	},
 ];
 
-const towns = [
-	{ name: "Portland", state: "Oregon" },
-	{ name: "Gresham", state: "Oregon" },
-	{ name: "Vancouver", state: "Washington" },
-	{ name: "Camas", state: "Washington" },
-	{ name: "Washougal", state: "Washington" },
+// PLACEHOLDER QUOTES. They show how the section looks, and only in `astro dev`: a build leaves out every quote marked
+// `placeholder`, and the whole section when none are left. Replace them with real words from Starlee's clients,
+// used with their permission.
+const allWords = [
+	{
+		quote: "Starlee made our birth feel calm and completely ours. She knew when to talk, when to hold my hand, and when to just be quiet with me.",
+		name: "Client name",
+		place: "Camas, Washington",
+		placeholder: true,
+	},
+	{
+		quote: "My partner never felt like a spare part. Starlee showed him how to help, and then let him.",
+		name: "Client name",
+		place: "Portland, Oregon",
+		placeholder: true,
+	},
+	{
+		quote: "In those first weeks at home, she checked in on me, not just the baby. I didn’t know how much I needed that.",
+		name: "Client name",
+		place: "Vancouver, Washington",
+		placeholder: true,
+	},
 ];
-
-// The scroll types "full heart." into the night band one letter at a time, between 48% and 88% of the way through it.
-const typed = [..."full heart."].map((char, i, all) => ({ char, style: `--at: ${(48 + (i * 40) / all.length).toFixed(2)}%` }));
-
-// A fixed star field, the same on every build.
-let seed = 11;
-const random = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-const stars = Array.from({ length: 110 }, () =>
-	[
-		`left: ${(random() * 100).toFixed(2)}%`,
-		`top: ${(random() * 100).toFixed(2)}%`,
-		`--star-size: ${(1.2 + random() * 1.8).toFixed(2)}px`,
-		`--star-opacity: ${(0.35 + random() * 0.6).toFixed(2)}`,
-	].join("; "),
-);
+const words = allWords.filter((word) => import.meta.env.DEV || !word.placeholder);
+const [featuredWord, ...moreWords] = words;
 ---
 
 <Base
@@ -117,170 +158,175 @@ const stars = Array.from({ length: 110 }, () =>
 	</section>
 
 	<section aria-labelledby="intro-title" class="px-6 py-24 md:px-10 md:py-40">
-		<div class="mx-auto grid max-w-6xl items-center gap-14 md:grid-cols-[5fr_6fr] md:gap-20 lg:gap-28">
-			<div class="sketch relative mx-3 md:mx-0">
-				<Picture
-					src={introPhoto}
-					alt="Starlee smiles over her shoulder on a garden path"
-					widths={[480, 800, 1200]}
-					sizes="(min-width: 768px) 40vw, 100vw"
-					formats={formats}
-					class="aspect-4/5 w-full object-cover"
-				/>
-				<svg
-					aria-hidden="true"
-					viewBox="0 0 100 125"
-					preserveAspectRatio="none"
-					fill="none"
-					stroke-linecap="round"
-					class="sketch-frame"
-				>
-					<path
-						pathLength="1"
-						class="sketch-line text-moon-navy"
-						d="M -3 1.5 C 25 -0.6, 60 1.4, 103 -0.8 M 100.6 -3 C 99 35, 101.8 80, 99.6 128 M 102.5 124.2 C 70 126.1, 35 123.4, -2.5 125.6 M 0.4 127.5 C 1.7 90, -1.2 45, 0.8 -2.5"
-					></path>
-					<path
-						pathLength="1"
-						class="sketch-line sketch-line-second text-moon-blue"
-						d="M 1.5 -1.8 C 40 0.9, 70 -1.6, 101.2 1.2 M 98.7 2 C 100.9 50, 98.6 95, 101.1 123 M 98 126.4 C 60 124.1, 30 126.9, 1.2 123.8 M -1.4 122 C 0.9 80, -0.9 30, 1.9 3"
-					></path>
-				</svg>
-				<svg aria-hidden="true" viewBox="0 0 32 32" fill="none" stroke-linecap="round" class="sketch-moon text-moon-gold">
-					<path
-						pathLength="1"
-						class="sketch-line"
-						d="M 19 4 C 10 5, 4.5 12.5, 7 20 C 9.5 27, 18.5 29.5, 25 24.5 C 17.5 24.8, 12.6 18.5, 13.6 12 C 14.2 8.4, 16.2 5.6, 19.6 3.6"
-					></path>
-				</svg>
-			</div>
+		<div class="mx-auto grid max-w-6xl items-center gap-16 md:grid-cols-[5fr_7fr] md:gap-20 lg:gap-28">
+			<ArchPhoto
+				src={introPhoto}
+				alt="Starlee smiles over her shoulder on a garden path"
+				sizes="(min-width: 768px) 26rem, 90vw"
+				crop="object-[50%_30%]"
+				class="reveal mx-auto w-full max-w-sm"
+			/>
 			<div>
-				<h2 id="intro-title" class="text-[clamp(2.5rem,1.75rem+2.4vw,4rem)] leading-[1.1]">
+				<h2 id="intro-title" class="reveal text-[clamp(2.5rem,1.75rem+2.4vw,4rem)] leading-[1.1]">
 					<span class="script text-moon-blue">Hello,</span> I’m Starlee
 				</h2>
-				<div class="mt-8 max-w-[34rem] space-y-5">
-					<p>
-						I’m a yoga teacher, a barista, and a big fan of a good book and a warm cup of tea. I love
-						connecting with people and creating spaces where everyone feels welcome to show up exactly as
-						they are.
+				<div class="mt-8 max-w-[36rem] space-y-6">
+					<p class="reveal font-display text-[clamp(1.5rem,1.25rem+0.8vw,2rem)] leading-[1.35] text-moon-navy">
+						I’m a yoga teacher, a barista, and a big fan of a good book and a warm cup of tea.
 					</p>
-					<p>
-						As your doula, I hope to be someone you feel completely comfortable around. Someone you can laugh
-						with, cry with, or just sit quietly with. I believe every person deserves to have their birth
-						preferences respected, without judgment or expectations. My goal is to take some of the weight off
-						your shoulders so you can focus on what matters most to you: bringing your baby into the world.
+					<p class="reveal">
+						I love connecting with people and creating spaces where everyone feels welcome to show up exactly as they
+						are.
+					</p>
+					<p class="reveal">
+						As your doula, I hope to be someone you feel completely comfortable around. Someone you can laugh with, cry
+						with, or just sit quietly with. I believe every person deserves to have their birth preferences respected,
+						without judgment or expectations. My goal is to take some of the weight off your shoulders so you can focus
+						on what matters most to you: bringing your baby into the world.
 					</p>
 				</div>
-				<a href="/about/" class="button-outline mt-10 text-moon-navy">More about Starlee</a>
+				<a href="/about/" class="reveal button-outline mt-10 text-moon-navy">More about Starlee</a>
 			</div>
 		</div>
 	</section>
 
-	<section aria-labelledby="moon-title" class="night">
-		<div class="night-stage">
-			<div aria-hidden="true" class="night-stars">
-				{stars.map((style) => <i style={style} class="night-star" />)}
+	<section aria-labelledby="doula-title" class="px-6 pb-28 md:px-10 md:pb-40">
+		<div class="mx-auto max-w-6xl border-t border-moon-gold/60 pt-24 md:pt-32">
+			<div class="grid gap-8 md:grid-cols-2 md:gap-20">
+				<div class="reveal">
+					<p class="caps">What a doula does</p>
+					<h2 id="doula-title" class="mt-6 text-[clamp(2.5rem,1.75rem+2.4vw,4rem)] leading-[1.1]">
+						Someone in your <span class="script text-moon-blue">corner</span>
+					</h2>
+				</div>
+				<div class="reveal [--reveal-step:1] md:pt-16">
+					<p class="max-w-md">
+						A birth doula provides continuous support throughout pregnancy, labor, and birth. Think of us as an extra
+						set of hands, a familiar face, and someone who’s there just for you.
+					</p>
+					<a href="/what-is-a-doula/" class="button-outline mt-10 text-moon-navy">More about doulas</a>
+				</div>
 			</div>
-			<Image src={moon} alt="" width={320} class="night-mark w-24 md:w-32" />
-			<h2 id="moon-title" class="night-title">
-				<span class="night-line">Calm hands, clear head,</span>{" "}
-				<span class="night-line">
-					<span class="sr-only">full heart.</span>
-					<span aria-hidden="true"
-						><span class="script">{typed.slice(0, -1).map(({ char, style }) => <span {style} class="night-char">{char}</span>)}</span
-						><span style={typed.at(-1)!.style} class="night-char">.</span></span
-					>
-				</span>
-			</h2>
-		</div>
-	</section>
-
-	<section aria-labelledby="support-title" class="px-6 py-24 md:px-10 md:py-40">
-		<div class="mx-auto max-w-6xl">
-			<div class="grid gap-6 md:grid-cols-2 md:items-end md:gap-20">
-				<h2 id="support-title" class="text-[clamp(2.5rem,1.75rem+2.4vw,4rem)] leading-[1.1]">
-					Support for every <span class="script text-moon-blue">stage</span>
-				</h2>
-				<p class="max-w-md">
-					Every family needs something different. Here is how I can help before, during, and after your baby
-					arrives.
-				</p>
-			</div>
-			<ul class="mt-16 grid gap-16 md:mt-24 md:grid-cols-3 md:gap-10 lg:gap-14">
+			<ul class="mt-20 grid gap-12 md:mt-28 md:grid-cols-3 md:gap-12 lg:gap-16">
 				{
-					stages.map((stage, i) => (
-						<li data-testid="support-stage" class:list={[i === 1 && "md:mt-24"]}>
-							<Picture
-								src={stage.photo}
-								alt={stage.alt}
-								widths={[480, 720, 960]}
-								sizes="(min-width: 768px) 30vw, 100vw"
-								formats={formats}
-								class="aspect-3/4 w-full object-cover"
-							/>
-							<h3 class="mt-8 text-3xl">{stage.title}</h3>
-							<p class="mt-4">{stage.text}</p>
+					values.map((value, i) => (
+						<li style={`--reveal-step: ${i}`} class="reveal border-t border-moon-navy/20 pt-8">
+							<h3 class="text-[clamp(1.75rem,1.5rem+0.8vw,2.25rem)] leading-[1.15]">{value.title}</h3>
+							<p class="mt-4 max-w-xs">{value.text}</p>
 						</li>
 					))
 				}
 			</ul>
-			<p class="mt-20 text-center">
-				<a href="/services/" class="button-solid">See services and pricing</a>
-			</p>
 		</div>
 	</section>
 
-	<section aria-labelledby="area-title" class="bg-moon-sand/40 px-6 py-24 md:px-10 md:py-32">
-		<div class="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-[1fr_1.3fr] md:gap-24">
-			<div>
-				<h2 id="area-title" class="text-[clamp(2.5rem,1.75rem+2.4vw,4rem)] leading-[1.1]">
+	<section aria-labelledby="area-title" class="px-6 pb-28 md:px-10 md:pb-40">
+		<div
+			class="mx-auto grid max-w-6xl items-center gap-10 border-t border-moon-gold/60 pt-24 md:pt-32 lg:grid-cols-[2fr_3fr] lg:gap-16"
+		>
+			<div class="reveal">
+				<p class="caps">Service area</p>
+				<h2 id="area-title" class="mt-6 text-[clamp(2.5rem,1.75rem+2.4vw,4rem)] leading-[1.1]">
 					Close to <span class="script text-moon-blue">home</span>
 				</h2>
 				<p class="mt-6 max-w-sm">
 					Based in Washougal, I support families across north Oregon and southwest Washington.
 				</p>
 			</div>
-			<ul class="divide-y divide-moon-gold/60 border-y border-moon-gold/60">
-				{
-					towns.map((town) => (
-						<li class="flex items-baseline justify-between gap-6 py-5">
-							<span class="font-display text-[clamp(1.75rem,1.4rem+1vw,2.25rem)] leading-none text-moon-navy">
-								{town.name}
-							</span>
-							<span class="caps text-[0.65rem]">{town.state}</span>
-						</li>
-					))
-				}
-			</ul>
+			<ServiceAreaMap class="-mx-6 md:-mx-10 lg:mx-0" />
 		</div>
 	</section>
 
-	<section
-		aria-labelledby="connect-title"
-		class="relative isolate overflow-hidden bg-moon-ink px-6 py-32 text-center text-moon-cream md:py-48"
-	>
-		<Picture
-			src={connectPhoto}
-			alt=""
-			widths={[640, 1280, 1600]}
-			sizes="100vw"
-			formats={formats}
-			class="absolute inset-0 -z-20 size-full object-cover object-[50%_45%]"
-		/>
-		<div aria-hidden="true" class="absolute inset-0 -z-10 bg-moon-navy/45 mix-blend-multiply"></div>
-		<div aria-hidden="true" class="absolute inset-0 -z-10 bg-moon-ink/55"></div>
-		<h2 id="connect-title" class="text-[clamp(2.75rem,1.75rem+3.2vw,5rem)] leading-[1.1] text-moon-cream">
-			Let’s <span class="script">connect</span>
-		</h2>
-		<p class="mx-auto mt-8 max-w-xl text-moon-cream">
-			The first conversation is free. Tell me about your due date, your plans, and your questions, and we’ll see
-			if we’re a good fit.
-		</p>
-		<a href="/contact/" class="button-light mt-12">Book a free consultation</a>
-		<p class="mt-10 space-x-3 text-moon-cream">
-			<a href="tel:+12819954078" class="text-current">281-995-4078</a>
-			<span aria-hidden="true">·</span>
-			<a href="mailto:starlee@newmoonbirth.com" class="text-current">starlee@newmoonbirth.com</a>
-		</p>
+	<section aria-labelledby="phases-title" class="phases bg-moon-sand/35 px-6 py-28 md:px-10 md:py-40">
+		<div class="mx-auto max-w-6xl">
+			<div class="reveal grid gap-6 md:grid-cols-2 md:items-end md:gap-20">
+				<div>
+					<p class="caps">How we’ll work together</p>
+					<h2 id="phases-title" class="mt-6 text-[clamp(2.5rem,1.75rem+2.4vw,4rem)] leading-[1.1]">
+						Support through every <span class="script text-moon-blue">phase</span>
+					</h2>
+				</div>
+				<p class="max-w-md">
+					My birth support package covers every phase, from our first conversation to the weeks after your baby arrives.
+				</p>
+			</div>
+			<div class="mt-20 md:mt-28 lg:grid lg:grid-cols-[5fr_7fr] lg:gap-24">
+				<div aria-hidden="true" class="hidden lg:block">
+					<div class="sticky top-[max(7rem,calc(50svh-11rem))]">
+						<MoonPhase id="phases-moon" class="phases-moon mx-auto w-full max-w-88 text-moon-navy" />
+					</div>
+				</div>
+				<ol class="phases-list mx-auto max-w-3xl space-y-20 md:space-y-28 lg:max-w-none">
+					{
+						phases.map((step, i) => (
+							<li class="reveal grid items-center gap-8 sm:grid-cols-[minmax(0,1fr)_13rem] md:gap-12 lg:grid-cols-[minmax(0,1fr)_14rem]">
+								<div>
+									<div class="flex items-center gap-4">
+										<MoonPhase id={`phase-${i}`} class={`${step.moon} size-9 shrink-0 text-moon-navy`} />
+										<p class="caps">{step.phase}</p>
+									</div>
+									<h3 class="mt-6 text-[clamp(2rem,1.6rem+1.2vw,2.75rem)] leading-[1.15]">{step.title}</h3>
+									<p class="mt-4 max-w-sm">{step.text}</p>
+								</div>
+								<Picture
+									src={step.photo}
+									alt={step.alt}
+									widths={[400, 640, 840]}
+									sizes="(min-width: 640px) 14rem, 100vw"
+									formats={formats}
+									class:list={[step.crop, "aspect-4/3 w-full object-cover sm:aspect-4/5"]}
+								/>
+							</li>
+						))
+					}
+				</ol>
+			</div>
+			<p class="reveal mt-24 text-center md:mt-32">
+				<a href="/services/" class="button-solid">See the birth support package</a>
+			</p>
+		</div>
 	</section>
+
+	{
+		featuredWord && (
+			<section aria-labelledby="words-title" class="px-6 py-28 md:px-10 md:py-40">
+				<div class="mx-auto max-w-5xl">
+					<div class="reveal flex flex-col items-center">
+						<div aria-hidden="true" class="flex items-center gap-3 text-moon-navy">
+							<MoonPhase id="words-waxing" class="moon-waxing size-4" />
+							<MoonPhase id="words-full" class="moon-full size-5" />
+							<MoonPhase id="words-waning" class="moon-waning size-4" />
+						</div>
+						<h2 id="words-title" class="caps mt-6 text-moon-navy">
+							Kind words
+						</h2>
+					</div>
+					<figure class="reveal mx-auto mt-12 max-w-4xl text-center">
+						<blockquote class="font-display text-[clamp(1.75rem,1.25rem+1.7vw,2.75rem)] leading-[1.3] text-balance text-moon-navy">
+							<p>“{featuredWord.quote}”</p>
+						</blockquote>
+						<figcaption class="mt-10">
+							<span class="block font-script text-5xl leading-none text-moon-blue">{featuredWord.name}</span>
+							<span class="caps mt-3 block">{featuredWord.place}</span>
+						</figcaption>
+					</figure>
+					{moreWords.length > 0 && (
+						<div class="mt-24 grid gap-16 border-t border-moon-navy/15 pt-16 md:grid-cols-2 md:gap-20">
+							{moreWords.map((word, i) => (
+								<figure style={`--reveal-step: ${i}`} class="reveal">
+									<blockquote class="font-display text-[clamp(1.375rem,1.25rem+0.5vw,1.75rem)] leading-[1.4] text-moon-navy">
+										<p>“{word.quote}”</p>
+									</blockquote>
+									<figcaption class="mt-6 flex items-baseline gap-4">
+										<span class="font-script text-4xl leading-none text-moon-blue">{word.name}</span>
+										<span class="caps">{word.place}</span>
+									</figcaption>
+								</figure>
+							))}
+						</div>
+					)}
+				</div>
+			</section>
+		)
+	}
 </Base>

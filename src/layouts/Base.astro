@@ -1,6 +1,6 @@
 ---
-import { Font, Image } from "astro:assets";
-import moon from "../assets/moon-mark.png";
+import { Font } from "astro:assets";
+import MoonPhase from "../components/MoonPhase.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import "../styles/global.css";
 
@@ -9,9 +9,11 @@ interface Props {
 	description: string;
 	/** Keeps the page out of search results, for example the 404 page. */
 	noindex?: boolean;
+	/** A small label above the h1, on a page without a hero. */
+	eyebrow?: string;
 }
 
-const { title, description, noindex = false } = Astro.props;
+const { title, description, noindex = false, eyebrow } = Astro.props;
 
 const siteName = "New Moon Birth";
 const fullTitle = `${title} | ${siteName}`;
@@ -22,6 +24,15 @@ const shareImage = {
 	height: 630,
 	alt: "New Moon Birth logo: a watercolor crescent moon beside the name",
 };
+
+// The towns Starlee serves, for the footer and for Google.
+const towns = [
+	{ name: "Portland", state: "OR" },
+	{ name: "Gresham", state: "OR" },
+	{ name: "Vancouver", state: "WA" },
+	{ name: "Camas", state: "WA" },
+	{ name: "Washougal", state: "WA" },
+];
 
 // Tells Google the site name, and that this is a local business with a phone number and service area.
 const structuredData = {
@@ -51,13 +62,7 @@ const structuredData = {
 				addressRegion: "WA",
 				addressCountry: "US",
 			},
-			areaServed: [
-				"Portland, OR",
-				"Gresham, OR",
-				"Vancouver, WA",
-				"Camas, WA",
-				"Washougal, WA",
-			].map((name) => ({ "@type": "City", name })),
+			areaServed: towns.map((town) => ({ "@type": "City", name: `${town.name}, ${town.state}` })),
 			founder: { "@id": `${Astro.site}#starlee` },
 		},
 		{
@@ -72,6 +77,8 @@ const structuredData = {
 };
 
 // A page that fills the `hero` slot supplies its own h1. It gets a transparent header over the hero, and a white one after it.
+// Any other page gets a page heading: the `heading` slot if it fills it, or else the title. Each page lays out its own
+// sections below the heading.
 const hasHero = Astro.slots.has("hero");
 
 const nav = [
@@ -84,6 +91,9 @@ const nav = [
 ];
 
 const current = (href: string) => (Astro.url.pathname === href ? "page" : undefined);
+
+// The footer's invitation leads to the contact page, so the contact page leaves it out.
+const invite = Astro.url.pathname !== "/contact/";
 ---
 
 <html lang="en">
@@ -171,53 +181,98 @@ const current = (href: string) => (Astro.url.pathname === href ? "page" : undefi
 					<slot />
 				</main>
 			) : (
-				<main class="mx-auto max-w-3xl px-6 py-16">
-					<h1>{title}</h1>
+				<main>
+					<div class="px-6 pt-16 pb-14 md:px-10 md:pt-24 md:pb-20">
+						<div class="mx-auto max-w-6xl">
+							{eyebrow && <p class="caps mb-6">{eyebrow}</p>}
+							<h1 class="max-w-4xl text-[clamp(3rem,2rem+3.6vw,5.5rem)] leading-[1.05] tracking-[-0.01em]">
+								<slot name="heading">{title}</slot>
+							</h1>
+						</div>
+					</div>
 					<slot />
 				</main>
 			)
 		}
 
-		<footer class="bg-moon-sand/45">
-			<div class="mx-auto grid max-w-7xl gap-14 px-6 py-20 md:grid-cols-[1.5fr_1fr_1fr] md:px-10 md:py-24">
-				<div>
-					{
-						/* The wide logo, rebuilt from the transparent moon and wordmark. Positions measured from public/logo-wide.png,
-						with the moon at 65% of its size there, centered on the wordmark. */
-					}
-					<div role="img" aria-label="New Moon Birth" class="relative aspect-854/330 w-59 md:w-66.5">
-						<Image src={moon} alt="" width={240} class="absolute top-0 left-0 w-[34.26%]" />
-						<span class="wordmark absolute top-[40.15%] left-[14.84%] block w-[85.16%] text-moon-navy"></span>
+		<footer class="overflow-hidden bg-moon-ink text-moon-cream/80">
+			<div class="mx-auto max-w-7xl px-6 md:px-10">
+				{
+					invite && (
+						<div class="grid items-center gap-12 border-b border-moon-cream/15 py-24 md:grid-cols-[1.25fr_1fr] md:gap-20 md:py-32">
+							<div class="reveal">
+								<p class="caps text-moon-mist">The first conversation is free</p>
+								<h2 class="mt-6 text-[clamp(2.75rem,1.75rem+3.2vw,5rem)] leading-[1.1] text-moon-cream">
+									Let’s <span class="script">connect</span>
+								</h2>
+								<p class="mt-6 max-w-md">
+									Tell me about your due date, your plans, and your questions, and we’ll see if we’re a good fit.
+								</p>
+								<a href="/contact/" class="button-light mt-10">
+									Book a free consultation
+								</a>
+							</div>
+							<MoonPhase
+								id="footer-moon"
+								class="footer-moon order-first mx-auto w-28 text-moon-cream md:order-none md:w-full md:max-w-sm"
+							/>
+						</div>
+					)
+				}
+				<div class="grid gap-12 py-16 sm:grid-cols-2 md:py-20 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:gap-10">
+					<p class="max-w-xs font-display text-2xl leading-snug text-moon-cream">
+						Birth doula support in north Oregon and southwest Washington.
+					</p>
+					<nav aria-labelledby="footer-explore">
+						<h2 id="footer-explore" class="caps text-moon-mist">Explore</h2>
+						<ul class="mt-6 space-y-3">
+							{
+								nav.slice(1).map((item) => (
+									<li>
+										<a href={item.href} class="nav-link text-moon-cream [--nav-link-offset:-0.15rem]">
+											{item.label}
+										</a>
+									</li>
+								))
+							}
+						</ul>
+					</nav>
+					<div>
+						<h2 class="caps text-moon-mist">Serving</h2>
+						<ul class="mt-6 space-y-3">
+							{
+								towns.map((town) => (
+									<li>
+										{town.name}, {town.state}
+									</li>
+								))
+							}
+						</ul>
 					</div>
-					<p class="mt-5 max-w-xs">Birth doula support in north Oregon and southwest Washington.</p>
+					<div>
+						<h2 class="caps text-moon-mist">Contact</h2>
+						<ul class="mt-6 space-y-3">
+							<li>Starlee Brown, birth doula</li>
+							<li>
+								<a href="tel:+12819954078" class="nav-link text-moon-cream [--nav-link-offset:-0.15rem]">
+									281-995-4078
+								</a>
+							</li>
+							<li>
+								<a href="mailto:starlee@newmoonbirth.com" class="nav-link text-moon-cream [--nav-link-offset:-0.15rem]">
+									starlee@newmoonbirth.com
+								</a>
+							</li>
+							<li>Washougal, WA</li>
+						</ul>
+					</div>
 				</div>
-				<nav aria-labelledby="footer-explore">
-					<h2 id="footer-explore" class="caps text-moon-navy">Explore</h2>
-					<ul class="mt-5 space-y-2">
-						{
-							nav.slice(1).map((item) => (
-								<li>
-									<a href={item.href} class="no-underline hover:underline">
-										{item.label}
-									</a>
-								</li>
-							))
-						}
-					</ul>
-				</nav>
-				<div>
-					<h2 class="caps text-moon-navy">Contact</h2>
-					<ul class="mt-5 space-y-2">
-						<li>Starlee Brown, birth doula</li>
-						<li><a href="tel:+12819954078">281-995-4078</a></li>
-						<li><a href="mailto:starlee@newmoonbirth.com">starlee@newmoonbirth.com</a></li>
-						<li>Washougal, WA</li>
-					</ul>
+				<span aria-hidden="true" class="wordmark block w-full text-moon-cream"></span>
+				<div class="caps flex flex-wrap justify-between gap-x-8 gap-y-3 pt-8 pb-10 text-[0.65rem] text-moon-cream/70">
+					<p>© {new Date().getFullYear()} New Moon Birth</p>
+					<p>Washougal, Washington</p>
 				</div>
 			</div>
-			<p class="caps mx-auto max-w-7xl border-t border-moon-gold/50 px-6 py-8 text-[0.65rem] md:px-10">
-				© {new Date().getFullYear()} New Moon Birth
-			</p>
 		</footer>
 
 		<script>

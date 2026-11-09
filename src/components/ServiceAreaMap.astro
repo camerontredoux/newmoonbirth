@@ -1,0 +1,104 @@
+---
+/**
+ * A map of the towns Starlee serves, along the Columbia River between Portland and Vancouver. The river banks fade out
+ * toward the edges, so the map sits on the page without a frame. Each town is a dot with a halo and its name.
+ *
+ * The banks are traced from the US Census Bureau's 2023 TIGER/Line area water (the Columbia and Willamette rivers,
+ * Vancouver Lake and Camas Slough), cropped to the box below and simplified. Longitude is scaled by the cosine of the
+ * middle latitude, so the map keeps true proportions: one kilometer is about 9.6 units.
+ */
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+
+const west = -122.92;
+const east = -122.12;
+const south = 45.4;
+const north = 45.74;
+const width = 600;
+const kmPerLon = 111.32 * Math.cos((((south + north) / 2) * Math.PI) / 180);
+const kmPerLat = 111.13;
+const unitsPerKm = width / ((east - west) * kmPerLon);
+const height = (north - south) * kmPerLat * unitsPerKm;
+
+// A point's place on the map, as percentages of its width and height.
+const place = (lon: number, lat: number) =>
+	`left: ${(((lon - west) * kmPerLon * unitsPerKm) / width) * 100}%; top: ${(((north - lat) * kmPerLat * unitsPerKm) / height) * 100}%`;
+
+// Where each town's name sits next to its dot.
+const labelSides = {
+	left: "right-4 top-0 -translate-y-1/2",
+	right: "left-4 top-0 -translate-y-1/2",
+	above: "bottom-3.5 left-0 -translate-x-1/2",
+};
+
+interface Town {
+	name: string;
+	state: string;
+	lon: number;
+	lat: number;
+	/** The side of the dot the name sits on, chosen so no two names overlap. */
+	label: keyof typeof labelSides;
+}
+
+const towns: Town[] = [
+	{ name: "Portland", state: "Oregon", lon: -122.6784, lat: 45.5152, label: "left" },
+	{ name: "Gresham", state: "Oregon", lon: -122.4302, lat: 45.4983, label: "right" },
+	{ name: "Vancouver", state: "Washington", lon: -122.6615, lat: 45.6387, label: "right" },
+	{ name: "Camas", state: "Washington", lon: -122.3995, lat: 45.5871, label: "above" },
+	{ name: "Washougal", state: "Washington", lon: -122.3534, lat: 45.5826, label: "right" },
+];
+
+const water =
+	"M 113.8 -12.0 L 115.4 -0.6 L 115.3 8.4 L 111.1 34.6 L 107.1 48.4 L 106.2 57.0 L 106.9 68.0 L 114.9 90.2 L 113.5 95.1 L 108.7 101.3 L 98.6 108.4 L 96.3 111.4 L 93.8 118.9 L 93.7 127.5 L 92.6 130.8 L 96.3 135.8 L 104.0 152.7 L 116.3 167.4 L 116.7 169.4 L 128.4 175.1 L 128.8 176.7 L 134.8 182.4 L 134.8 185.2 L 136.8 187.3 L 139.0 187.1 L 144.1 192.2 L 144.4 194.2 L 151.9 197.5 L 161.3 203.7 L 162.8 202.6 L 187.2 227.9 L 188.0 233.0 L 184.7 243.5 L 189.5 256.9 L 189.1 261.6 L 185.8 269.9 L 186.6 277.7 L 188.6 282.8 L 187.9 288.5 L 189.1 296.1 L 195.6 307.1 L 197.3 312.3 L 200.0 316.0 L 203.5 317.3 L 204.3 318.9 L 200.6 324.6 L 202.5 331.2 L 199.8 332.4 L 196.6 338.5 L 197.9 343.4 L 195.4 352.4 L 198.1 355.1 L 199.5 354.8 L 197.2 351.6 L 199.5 344.0 L 199.3 337.7 L 204.7 330.1 L 204.6 327.1 L 202.7 324.4 L 204.1 323.6 L 205.7 324.7 L 207.9 318.8 L 206.9 316.2 L 203.3 315.3 L 199.1 310.5 L 192.0 294.1 L 191.3 289.2 L 192.1 284.1 L 197.3 280.2 L 200.2 273.8 L 200.3 269.9 L 198.5 268.0 L 199.0 272.2 L 196.9 278.5 L 195.3 280.3 L 192.9 280.5 L 192.7 278.1 L 189.6 273.1 L 189.2 269.9 L 191.8 257.2 L 195.4 266.6 L 194.7 267.5 L 193.0 264.7 L 191.7 265.5 L 191.7 268.9 L 190.0 272.5 L 193.4 277.7 L 195.7 275.7 L 195.6 270.8 L 197.4 267.0 L 195.9 265.3 L 193.9 255.5 L 189.9 247.9 L 188.6 243.1 L 188.8 238.0 L 190.8 230.0 L 183.3 218.3 L 177.0 213.3 L 168.0 200.9 L 156.3 194.6 L 146.3 187.3 L 147.5 183.5 L 141.8 181.3 L 135.7 176.3 L 135.1 174.4 L 130.9 173.0 L 131.3 170.5 L 125.5 169.5 L 119.1 165.6 L 114.7 161.1 L 108.7 151.8 L 107.9 149.6 L 110.5 148.9 L 107.1 148.2 L 104.6 143.3 L 103.2 137.5 L 100.2 132.7 L 99.2 124.5 L 100.0 119.2 L 102.8 113.0 L 113.7 103.2 L 116.6 95.6 L 118.0 95.4 L 142.7 121.7 L 165.0 136.7 L 185.4 145.6 L 197.7 148.4 L 228.5 148.5 L 240.7 150.9 L 261.7 162.6 L 282.6 179.4 L 294.9 185.6 L 316.8 191.0 L 329.8 193.2 L 330.4 192.1 L 333.1 193.4 L 334.2 191.9 L 337.0 192.1 L 338.0 193.4 L 338.6 192.3 L 344.9 193.3 L 345.4 194.5 L 360.5 190.4 L 372.1 189.8 L 383.7 186.5 L 392.3 186.6 L 396.4 184.6 L 409.1 185.6 L 413.6 187.8 L 416.2 191.5 L 420.0 193.6 L 434.1 209.1 L 442.4 210.8 L 444.7 213.0 L 442.4 212.9 L 441.9 214.1 L 445.9 214.8 L 455.2 214.7 L 468.9 211.6 L 478.5 212.0 L 483.2 210.7 L 493.4 211.9 L 495.2 210.0 L 514.9 205.4 L 516.5 203.8 L 523.4 201.7 L 541.7 202.3 L 545.6 200.7 L 558.1 191.7 L 570.4 178.2 L 574.1 178.3 L 584.5 173.1 L 585.8 173.8 L 589.9 172.5 L 590.6 170.7 L 595.3 170.7 L 596.3 169.3 L 602.0 169.0 L 605.3 170.3 L 612.0 168.3 L 612.0 150.2 L 609.4 150.3 L 594.2 156.7 L 591.4 159.6 L 581.4 160.8 L 568.0 165.5 L 562.9 169.4 L 556.7 170.5 L 545.6 177.8 L 540.4 184.9 L 534.2 187.1 L 529.2 190.8 L 512.8 194.7 L 494.5 194.7 L 488.7 198.3 L 482.8 197.7 L 482.4 196.8 L 471.4 193.5 L 457.8 194.1 L 445.1 192.8 L 436.6 188.2 L 430.0 180.0 L 420.6 174.8 L 402.7 173.9 L 402.2 172.9 L 391.2 173.5 L 386.9 174.7 L 389.9 177.7 L 390.2 178.8 L 388.6 179.6 L 374.2 182.4 L 363.8 180.9 L 357.4 176.9 L 364.3 177.2 L 383.0 171.6 L 387.3 173.8 L 389.8 172.6 L 386.9 170.1 L 382.3 169.8 L 366.1 175.4 L 356.6 174.3 L 336.5 168.1 L 309.6 163.2 L 263.4 146.6 L 251.2 143.1 L 248.3 143.3 L 232.4 137.0 L 230.6 138.4 L 230.8 136.5 L 225.6 137.3 L 221.8 135.7 L 218.3 137.4 L 207.3 137.1 L 199.1 133.6 L 195.4 130.5 L 178.4 124.0 L 153.8 106.2 L 129.2 95.4 L 124.6 90.2 L 116.9 75.0 L 117.8 73.0 L 115.7 70.4 L 113.6 60.7 L 118.4 48.5 L 116.9 48.5 L 116.8 45.6 L 119.0 36.8 L 120.1 35.8 L 119.0 26.5 L 121.3 15.9 L 123.2 12.3 L 122.5 8.4 L 123.5 2.6 L 121.4 -4.5 L 120.7 -12.0 Z M 588.9 164.3 L 594.0 160.8 L 602.4 157.4 L 609.6 157.8 L 610.4 158.7 L 609.0 160.5 L 601.9 163.6 L 595.4 164.7 Z M 530.5 198.1 L 543.8 192.9 L 549.9 193.7 L 544.7 198.2 L 541.0 199.5 L 538.1 199.4 L 535.2 197.8 Z M 439.7 195.1 L 462.7 197.5 L 469.6 195.3 L 471.9 197.8 L 477.5 199.8 L 478.2 201.4 L 488.5 203.4 L 479.3 206.9 L 473.5 206.9 L 450.2 201.4 L 444.1 198.7 Z M 327.3 188.3 L 332.9 187.2 L 352.1 188.6 L 343.9 191.5 Z M 257.5 152.9 L 267.8 159.0 L 268.6 158.2 L 272.0 160.0 L 274.1 158.4 L 274.4 160.4 L 279.8 160.1 L 283.7 162.5 L 332.8 175.1 L 339.5 178.2 L 344.2 183.2 L 321.9 185.2 L 294.5 178.8 L 289.2 176.2 L 274.4 165.5 L 274.2 163.5 L 273.1 164.9 L 267.6 161.9 Z M 131.8 105.2 L 132.8 104.7 L 136.9 107.5 L 144.9 111.3 L 150.7 112.7 L 160.3 117.7 L 171.2 126.7 L 171.3 129.3 L 172.4 128.9 L 172.0 127.3 L 189.0 138.4 L 185.2 140.0 L 186.4 141.6 L 191.0 140.0 L 191.8 143.6 L 193.0 143.9 L 192.7 139.1 L 196.0 140.8 L 197.0 144.5 L 200.4 144.6 L 200.9 142.9 L 203.6 144.9 L 196.1 145.9 L 191.1 145.3 L 184.7 143.0 L 183.2 139.9 L 179.1 140.3 L 168.7 135.5 L 165.4 132.1 L 158.1 129.0 L 143.4 118.3 Z M 132.8 72.3 L 134.6 79.8 L 138.7 83.0 L 139.6 82.5 L 139.1 78.2 L 141.1 77.7 L 143.0 78.7 L 143.3 77.2 L 144.6 76.8 L 152.6 81.3 L 157.8 79.7 L 163.9 75.9 L 166.7 67.4 L 168.1 67.1 L 169.3 69.5 L 170.2 69.0 L 166.5 60.9 L 161.7 57.7 L 151.6 41.9 L 150.8 44.2 L 146.2 46.4 L 144.3 46.2 L 138.0 55.3 L 133.5 67.2 Z";
+---
+
+<div class:list={["area-map relative", className]} style={`aspect-ratio: ${width} / ${height}`}>
+	<svg viewBox={`0 0 ${width} ${height}`} aria-hidden="true" class="absolute inset-0 size-full">
+		<defs>
+			<radialGradient id="area-map-fade">
+				<stop offset="0.5" stop-color="white"></stop>
+				<stop offset="1" stop-color="black"></stop>
+			</radialGradient>
+			<mask id="area-map-edges">
+				<rect width={width} height={height} fill="url(#area-map-fade)"></rect>
+			</mask>
+		</defs>
+		<g mask="url(#area-map-edges)">
+			<path d={water} fill-rule="evenodd" class="area-map-water"></path>
+			<path d={water} pathLength="1" class="area-map-banks"></path>
+		</g>
+	</svg>
+	<p aria-hidden="true" class="area-map-label caps absolute top-[16%] left-[76%] -translate-x-1/2 text-[0.625rem] tracking-[0.45em] text-moon-blue">
+		Washington
+	</p>
+	<p aria-hidden="true" class="area-map-label caps absolute top-[86%] left-[74%] -translate-x-1/2 text-[0.625rem] tracking-[0.45em] text-moon-blue">
+		Oregon
+	</p>
+	<p
+		aria-hidden="true"
+		class="area-map-label absolute top-[56%] left-[47%] -translate-1/2 rotate-[14deg] font-script text-[clamp(1.5rem,1.25rem+0.8vw,2rem)] leading-none whitespace-nowrap text-moon-blue"
+	>
+		Columbia River
+	</p>
+	<ul>
+		{
+			towns.map((town, i) => (
+				<li style={`${place(town.lon, town.lat)}; --town-step: ${i}`} class="area-map-town absolute">
+					<span class="area-map-dot"></span>
+					<span
+						class:list={[
+							labelSides[town.label],
+							"area-map-name absolute font-display text-[clamp(0.9375rem,0.875rem+0.25vw,1.125rem)] leading-none whitespace-nowrap text-moon-navy",
+						]}
+					>
+						{town.name}
+						<span class="sr-only">, {town.state}</span>
+					</span>
+				</li>
+			))
+		}
+	</ul>
+</div>

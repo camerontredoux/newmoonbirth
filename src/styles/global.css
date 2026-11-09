@@ -217,177 +217,212 @@
 }
 
 /*
- * The night band on the home page: a still night sky. The band pins while it scrolls, and the scroll plays the
- * moon and heading: the moon mark and the first line of the heading fade in together, then the scroll
- * types the second line letter by letter. Without scroll-driven animation support, or with reduced motion, nothing moves.
+ * Fade-in on scroll. An element with the `reveal` class fades in and rises into place as it scrolls into view.
+ * Set `--reveal-step` (0, 1, 2…) on siblings to start each one a little later than the one before it.
+ * The range is in rem, not percent, so tall and short elements finish at the same point on the screen.
+ * Without scroll-driven animation support, or with reduced motion, the element shows in place.
  */
-.night {
-  view-timeline: --night block;
-  text-align: center;
-}
-
-.night-stage {
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: max(100svh, 40rem);
-  overflow: hidden;
-  padding: 8rem 1.5rem;
-  background-color: var(--color-moon-ink);
-}
-
-.night-stars {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-}
-
-.night-star {
-  position: absolute;
-  width: var(--star-size);
-  height: var(--star-size);
-  border-radius: 50%;
-  background-color: var(--color-moon-cream);
-  opacity: var(--star-opacity);
-}
-
-.night-mark {
-  filter: drop-shadow(0 0 2.5rem color-mix(in oklab, var(--color-moon-sand) 45%, transparent));
-}
-
-.night-title {
-  margin-top: 2.5rem;
-  max-width: 64rem;
-  font-size: clamp(2.25rem, 1.4rem + 3vw, 4.75rem);
-  line-height: 1.2;
-  color: var(--color-moon-cream);
-}
-
-.night-line {
-  display: block;
-}
-
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
-    .night {
-      height: 220svh;
-    }
-
-    .night-stage {
-      position: sticky;
-      top: 0;
-      height: 100svh;
-      min-height: 0;
-    }
-
-    .night-mark {
-      animation: night-mark linear both;
-      animation-timeline: --night;
-      animation-range: contain 15% contain 40%;
-    }
-
-    .night-line {
-      animation: night-line-in linear both;
-      animation-timeline: --night;
-      animation-range: contain 15% contain 40%;
-    }
-
-    /* Each letter appears at its own point in the scroll, set by --at in index.astro. It snaps in, like a keystroke. */
-    .night-char {
-      animation: night-type steps(1, jump-start) both;
-      animation-timeline: --night;
-      animation-range: contain var(--at) contain 100%;
+    .reveal {
+      animation: reveal ease-out both;
+      animation-timeline: view();
+      animation-range: entry calc(1rem + var(--reveal-step, 0) * 3rem) entry calc(13rem + var(--reveal-step, 0) * 3rem);
     }
   }
 }
 
-/* Fades in with the first line, rises, turns upright, and starts to glow. The `to` state is the mark's own still style. */
-@keyframes night-mark {
-  from { opacity: 0; translate: 0 4vh; rotate: -14deg; scale: 0.9; filter: drop-shadow(0 0 0 transparent); }
+@keyframes reveal {
+  from { opacity: 0; translate: 0 2rem; }
 }
 
-@keyframes night-line-in {
-  from { opacity: 0; translate: 0 1.25rem; filter: blur(8px); }
+/*
+ * Moon phases, drawn by MoonPhase.astro. Two shadow discs in the moon's mask set how much of it is lit:
+ * - `--moon-wax` goes from 0 (new moon, dark) to 1 (full moon). The light grows in from the right.
+ * - `--moon-wane` goes from 0 (full moon) to 1 (dark again). The shadow comes back in from the right.
+ * The properties are registered so the moon can animate from one phase to the next.
+ * The pencil outline takes the current text color.
+ */
+@property --moon-wax {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
 }
 
-@keyframes night-type {
+@property --moon-wane {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+.moon-phase {
+  display: block;
+  overflow: visible;
+}
+
+/* The shadow discs have a radius of 49. A move of 100 takes a disc fully off the moon, which has a radius of 48. */
+.moon-phase-wax {
+  transform: translateX(calc(var(--moon-wax) * -100px));
+}
+
+.moon-phase-wane {
+  transform: translateX(calc((1 - var(--moon-wane)) * 100px));
+}
+
+.moon-phase-ring {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.6;
+}
+
+.moon-phase-ring-second {
+  opacity: 0.3;
+}
+
+.moon-new { --moon-wax: 0; --moon-wane: 0; }
+.moon-waxing { --moon-wax: 0.4; --moon-wane: 0; }
+.moon-full { --moon-wax: 1; --moon-wane: 0; }
+.moon-waning { --moon-wax: 1; --moon-wane: 0.6; }
+
+/*
+ * "Support through every phase" on the home page. On wide screens a large moon stays in view beside the four
+ * phases. As the list scrolls past, the moon goes from new, to waxing, to full, to waning, to match the phase in
+ * the middle of the screen. Without scroll-driven animation support, or with reduced motion, it stays full.
+ */
+.phases {
+  timeline-scope: --phases;
+}
+
+.phases-list {
+  view-timeline: --phases block;
+}
+
+.phases-moon {
+  filter: drop-shadow(0 0 3rem color-mix(in oklab, var(--color-moon-cream) 85%, transparent));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .phases-moon {
+      animation: phases-moon linear both;
+      animation-timeline: --phases;
+      animation-range: cover 0% cover 100%;
+    }
+  }
+}
+
+/* Each phase holds while its step is near the middle of the screen. The step positions were measured in a browser. */
+@keyframes phases-moon {
+  0%, 28% { --moon-wax: 0; --moon-wane: 0; }
+  36%, 46% { --moon-wax: 0.4; --moon-wane: 0; }
+  54%, 64% { --moon-wax: 1; --moon-wane: 0; }
+  72%, 100% { --moon-wax: 1; --moon-wane: 0.6; }
+}
+
+/*
+ * The service area map on the home page, drawn by ServiceAreaMap.astro. As it scrolls into view, the river banks
+ * trace themselves in, the water and the place names fade in, and then the towns appear one by one, each growing from
+ * its dot. Without scroll-driven animation support, or with reduced motion, the map shows complete.
+ */
+.area-map-water {
+  fill: var(--color-moon-mist);
+  fill-opacity: 0.5;
+}
+
+/* In SVG units, about 1px on a wide screen. */
+.area-map-banks {
+  fill: none;
+  stroke: var(--color-moon-navy);
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+  stroke-opacity: 0.75;
+}
+
+/* The dots and halos scale with the map's width, so the Camas and Washougal halos never touch. */
+.area-map {
+  container-type: inline-size;
+}
+
+/*
+ * A navy dot with a thin cream ring and a soft gold halo, like a small moon. The halo and dot together are about 4.9%
+ * of the map's width, and Camas and Washougal are 5.8% apart.
+ */
+.area-map-dot {
+  --dot: clamp(0.5rem, 1.85cqi, 0.75rem);
+  --halo: clamp(0.25rem, 1cqi, 0.5rem);
+  position: absolute;
+  width: var(--dot);
+  height: var(--dot);
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: var(--color-moon-navy);
+  box-shadow:
+    0 0 0 1.5px var(--color-moon-cream),
+    0 0 0 calc(1.5px + var(--halo)) color-mix(in oklab, var(--color-moon-gold) 35%, transparent),
+    0 0 calc(var(--halo) * 2.5) calc(var(--halo) * 1.25) color-mix(in oklab, var(--color-moon-sand) 70%, transparent);
+}
+
+/* A soft cream edge keeps a name readable where it crosses a river bank. */
+.area-map-name {
+  text-shadow:
+    0 0 0.25rem var(--color-moon-cream),
+    0 0 0.5rem var(--color-moon-cream);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .area-map {
+      view-timeline: --area-map block;
+    }
+
+    .area-map-banks {
+      animation: sketch-draw linear both;
+      animation-timeline: --area-map;
+      animation-range: entry 10% cover 45%;
+    }
+
+    .area-map-water,
+    .area-map-label {
+      animation: area-map-in linear both;
+      animation-timeline: --area-map;
+      animation-range: cover 30% cover 45%;
+    }
+
+    .area-map-town {
+      animation: area-map-town ease-out both;
+      animation-timeline: --area-map;
+      animation-range: cover calc(36% + var(--town-step) * 3%) cover calc(44% + var(--town-step) * 3%);
+    }
+  }
+}
+
+@keyframes area-map-in {
   from { opacity: 0; }
 }
 
-/*
- * A hand-drawn frame around a photo, as if sketched in pencil. Two wobbly passes overshoot at the corners, and a
- * small crescent sits at the top-right corner. The frame's SVG sits 0.75rem outside the photo and stretches with it.
- * As the photo scrolls into view, the lines draw themselves in. Without scroll-driven animation support, or with
- * reduced motion, the lines show fully drawn.
- */
-.sketch-frame {
-  position: absolute;
-  inset: -0.75rem;
-  width: calc(100% + 1.5rem);
-  height: calc(100% + 1.5rem);
-  overflow: visible;
-  pointer-events: none;
+@keyframes area-map-town {
+  from { opacity: 0; scale: 0.6; }
 }
 
-/*
- * Stroke widths are in SVG units, so the lines scale with the photo. The frame keeps the photo's 4:5 shape, so its
- * stretch is almost even and the lines keep an even width. Avoid `vector-effect: non-scaling-stroke` here: it breaks
- * the dash lengths the draw-in animation depends on.
- */
-.sketch-line {
-  stroke: currentColor;
-  stroke-width: 0.35;
-}
-
-.sketch-line-second {
-  stroke-width: 0.22;
-  opacity: 0.7;
-}
-
-.sketch-moon .sketch-line {
-  stroke-width: 1.4;
-}
-
-.sketch-moon {
-  position: absolute;
-  top: -2.75rem;
-  right: -2rem;
-  width: 3rem;
-  rotate: 12deg;
-  overflow: visible;
-  pointer-events: none;
-
-  /* Small screens have only about 2.25rem beside the photo, so the crescent sits closer there. */
-  @media (width >= 48rem) {
-    top: -3.25rem;
-    right: -3.5rem;
-    width: 3.75rem;
-  }
+/* The footer's moon rises a little as the footer scrolls into view. */
+.footer-moon {
+  filter: drop-shadow(0 0 4rem color-mix(in oklab, var(--color-moon-sand) 30%, transparent));
 }
 
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
-    .sketch {
-      view-timeline: --sketch block;
-    }
-
-    .sketch-line {
-      animation: sketch-draw linear both;
-      animation-timeline: --sketch;
-      animation-range: entry 10% cover 40%;
-    }
-
-    .sketch-line-second {
-      animation-range: entry 30% cover 50%;
-    }
-
-    .sketch-moon .sketch-line {
-      animation-range: cover 35% cover 50%;
+    .footer-moon {
+      animation: footer-moon ease-out both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 45%;
     }
   }
+}
+
+@keyframes footer-moon {
+  from { translate: 0 18%; opacity: 0.3; }
 }
 
 /*

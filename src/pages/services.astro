@@ -1,15 +1,88 @@
 ---
+import ArchPhoto from "../components/ArchPhoto.astro";
 import Base from "../layouts/Base.astro";
+import pregnancyPhoto from "../assets/photos/pregnancy-window.jpg";
+
+// The package's parts, in Starlee's words from her brochure.
+const parts = [
+	{
+		title: "Two prenatal visits",
+		text: "Time for us to get to know each other, talk through your hopes and preferences for birth, prepare for labor, and go over any questions you may have.",
+	},
+	{
+		title: "On-call support",
+		text: "I’ll be on call for you for two weeks leading up to your due date, ready to join you when labor begins.",
+	},
+	{
+		title: "Text & phone support",
+		text: "Have a question, need a resource, or just want to talk something through? I’m available by text throughout our time working together.",
+	},
+	{
+		title: "Continuous labor support",
+		text: "I’ll be there throughout your labor and birth, offering hands-on comfort, encouragement, positioning suggestions, and support for you and your birth partner.",
+	},
+	{
+		title: "Two postpartum visits",
+		text: "Time to check in, talk about your birth experience, see how you’re doing, and offer support as you settle into life with your new baby.",
+	},
+];
+
+// The package price as it should read on the page, for example "$1,200". Until Starlee sets it, the page asks visitors
+// to get in touch for pricing.
+const price: string | undefined = undefined;
+
+const star = "M12 0 C12.8 7.5 16.5 11.2 24 12 C16.5 12.8 12.8 16.5 12 24 C11.2 16.5 7.5 12.8 0 12 C7.5 11.2 11.2 7.5 12 0 Z";
 ---
 
 <Base
 	title="Services"
-	description="Birth and postpartum doula services from New Moon Birth in Portland, Gresham, Vancouver, Camas, and Washougal, with packages and pricing."
+	description="The New Moon Birth birth support package: two prenatal visits, two weeks on call, text and phone support, continuous labor support, and two postpartum visits."
 >
-	<h2>Birth support</h2>
-	<p>Placeholder.</p>
-	<h2>Postpartum support</h2>
-	<p>Placeholder.</p>
-	<h2>Pricing</h2>
-	<p>Placeholder: packages and prices.</p>
+	<Fragment slot="heading">My birth support <span class="script text-moon-blue">package</span></Fragment>
+
+	<section aria-label="What the package includes" class="px-6 pb-28 md:px-10 md:pb-40">
+		<div class="mx-auto grid max-w-6xl items-start gap-16 md:grid-cols-[5fr_7fr] md:gap-20 lg:gap-28">
+			<div class="md:sticky md:top-28">
+				<ArchPhoto
+					src={pregnancyPhoto}
+					alt="A pregnant woman in a soft white gown stands by a bright window with her hands on her belly"
+					sizes="(min-width: 768px) 26rem, 90vw"
+					crop="object-[50%_30%]"
+					class="reveal mx-auto w-full max-w-sm"
+				/>
+			</div>
+			<div>
+				<ol class="space-y-12 md:space-y-14">
+					{
+						parts.map((part, i) => (
+							<li style={`--reveal-step: ${i % 2}`} class="reveal grid grid-cols-[1.25rem_minmax(0,1fr)] gap-x-5 border-t border-moon-navy/20 pt-8">
+								<svg aria-hidden="true" viewBox="0 0 24 24" class="mt-2 size-4 text-moon-gold">
+									<path d={star} fill="currentColor" />
+								</svg>
+								<div>
+									<h2 class="text-[clamp(1.75rem,1.5rem+0.8vw,2.25rem)] leading-[1.15]">{part.title}</h2>
+									<p class="mt-3 max-w-lg">{part.text}</p>
+								</div>
+							</li>
+						))
+					}
+				</ol>
+				<div class="reveal mt-16 border-y border-moon-gold/70 py-10 md:mt-20">
+					<p class="caps">Pricing</p>
+					{
+						price ? (
+							<p class="mt-4 font-display text-[clamp(2.5rem,2rem+1.6vw,3.5rem)] leading-none text-moon-navy">{price}</p>
+						) : (
+							<p class="mt-4 font-display text-[clamp(1.75rem,1.5rem+0.8vw,2.25rem)] leading-[1.2] text-moon-navy">
+								Get in touch for current pricing
+							</p>
+						)
+					}
+					<p class="mt-4 max-w-md">
+						The first conversation is free. <a href="/billing/" class="underline underline-offset-4 decoration-moon-gold hover:text-moon-navy">Billing help</a> covers ways to pay.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
 </Base>
