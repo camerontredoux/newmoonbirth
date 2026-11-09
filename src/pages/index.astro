@@ -6,69 +6,8 @@ import ServiceAreaMap from "../components/ServiceAreaMap.astro";
 import Base from "../layouts/Base.astro";
 import heroPhoto from "../assets/photos/hero-linen.jpg";
 import introPhoto from "../assets/photos/meet-starlee.jpg";
-import teaPhoto from "../assets/photos/tea-blanket.jpg";
-import bellySupportPhoto from "../assets/photos/belly-support.jpg";
-import babyHandPhoto from "../assets/photos/baby-hand.jpg";
-import newbornChestPhoto from "../assets/photos/newborn-chest.jpg";
 
 const formats = ["avif", "webp"];
-
-// "What a doula does": the three parts of the tagline, each in words from Starlee's brochure.
-const values = [
-	{
-		title: "Calm hands",
-		text: "Help finding comfortable positions, comfort measures, and hands-on support throughout your labor and birth.",
-	},
-	{
-		title: "Clear head",
-		text: "Answers to your questions and help navigating your options, so you feel informed making the decisions that feel right for you.",
-	},
-	{
-		title: "Full heart",
-		text: "Encouragement for you and your birth partner, and someone who’s there just for you.",
-	},
-];
-
-// "Support through every phase". Each step has its own moon phase, and the large moon beside the list matches it.
-// On phones the photos are cropped wider, and `crop` keeps the faces and hands in the frame.
-const phases = [
-	{
-		moon: "moon-new",
-		phase: "New moon",
-		title: "A first conversation",
-		photo: teaPhoto,
-		alt: "A mustard mug of tea on a saucer, set on a chunky cream knit blanket",
-		crop: "object-[50%_35%]",
-		text: "It starts with a free consultation, a chance to ask your questions and see if we’re a good fit.",
-	},
-	{
-		moon: "moon-waxing",
-		phase: "Waxing moon",
-		title: "Pregnancy",
-		photo: bellySupportPhoto,
-		alt: "A woman in a linen dress rests her hands on a pregnant woman’s belly in a sunny room",
-		crop: "object-[50%_45%]",
-		text: "Two prenatal visits to get to know each other, talk through your hopes and preferences for birth, and prepare for labor. In between, I’m a text or call away.",
-	},
-	{
-		moon: "moon-full",
-		phase: "Full moon",
-		title: "Birth",
-		photo: babyHandPhoto,
-		alt: "A newborn’s hand wraps around a parent’s finger",
-		crop: "object-center",
-		text: "I’m on call for the two weeks before your due date. When labor begins, I join you and stay through your labor and birth, with hands-on comfort, encouragement, and support for your birth partner.",
-	},
-	{
-		moon: "moon-waning",
-		phase: "Waning moon",
-		title: "Postpartum",
-		photo: newbornChestPhoto,
-		alt: "A newborn sleeps on a parent’s shoulder",
-		crop: "object-center",
-		text: "Two postpartum visits to check in, talk about your birth experience, see how you’re doing, and support you as you settle into life with your new baby.",
-	},
-];
 
 // PLACEHOLDER QUOTES. They show how the section looks, and only in `astro dev`: a build leaves out every quote marked
 // `placeholder`, and the whole section when none are left. Replace them with real words from Starlee's clients,
@@ -190,36 +129,6 @@ const [featuredWord, ...moreWords] = words;
 		</div>
 	</section>
 
-	<section aria-labelledby="doula-title" class="px-6 pb-28 md:px-10 md:pb-40">
-		<div class="mx-auto max-w-6xl border-t border-moon-gold/60 pt-24 md:pt-32">
-			<div class="grid gap-8 md:grid-cols-2 md:gap-20">
-				<div class="reveal">
-					<p class="caps">What a doula does</p>
-					<h2 id="doula-title" class="mt-6 text-[clamp(2.5rem,1.75rem+2.4vw,4rem)] leading-[1.1]">
-						Someone in your <span class="script text-moon-blue">corner</span>
-					</h2>
-				</div>
-				<div class="reveal [--reveal-step:1] md:pt-16">
-					<p class="max-w-md">
-						A birth doula provides continuous support throughout pregnancy, labor, and birth. Think of us as an extra
-						set of hands, a familiar face, and someone who’s there just for you.
-					</p>
-					<a href="/what-is-a-doula/" class="button-outline mt-10 text-moon-navy">More about doulas</a>
-				</div>
-			</div>
-			<ul class="mt-20 grid gap-12 md:mt-28 md:grid-cols-3 md:gap-12 lg:gap-16">
-				{
-					values.map((value, i) => (
-						<li style={`--reveal-step: ${i}`} class="reveal border-t border-moon-navy/20 pt-8">
-							<h3 class="text-[clamp(1.75rem,1.5rem+0.8vw,2.25rem)] leading-[1.15]">{value.title}</h3>
-							<p class="mt-4 max-w-xs">{value.text}</p>
-						</li>
-					))
-				}
-			</ul>
-		</div>
-	</section>
-
 	<section aria-labelledby="area-title" class="px-6 pb-28 md:px-10 md:pb-40">
 		<div
 			class="mx-auto grid max-w-6xl items-center gap-10 border-t border-moon-gold/60 pt-24 md:pt-32 lg:grid-cols-[2fr_3fr] lg:gap-16"
@@ -234,56 +143,6 @@ const [featuredWord, ...moreWords] = words;
 				</p>
 			</div>
 			<ServiceAreaMap class="-mx-6 md:-mx-10 lg:mx-0" />
-		</div>
-	</section>
-
-	<section aria-labelledby="phases-title" class="phases bg-moon-sand/35 px-6 py-28 md:px-10 md:py-40">
-		<div class="mx-auto max-w-6xl">
-			<div class="reveal grid gap-6 md:grid-cols-2 md:items-end md:gap-20">
-				<div>
-					<p class="caps">How we’ll work together</p>
-					<h2 id="phases-title" class="mt-6 text-[clamp(2.5rem,1.75rem+2.4vw,4rem)] leading-[1.1]">
-						Support through every <span class="script text-moon-blue">phase</span>
-					</h2>
-				</div>
-				<p class="max-w-md">
-					My birth support package covers every phase, from our first conversation to the weeks after your baby arrives.
-				</p>
-			</div>
-			<div class="mt-20 md:mt-28 lg:grid lg:grid-cols-[5fr_7fr] lg:gap-24">
-				<div aria-hidden="true" class="hidden lg:block">
-					<div class="sticky top-[max(7rem,calc(50svh-11rem))]">
-						<MoonPhase id="phases-moon" class="phases-moon mx-auto w-full max-w-88 text-moon-navy" />
-					</div>
-				</div>
-				<ol class="phases-list mx-auto max-w-3xl space-y-20 md:space-y-28 lg:max-w-none">
-					{
-						phases.map((step, i) => (
-							<li class="reveal grid items-center gap-8 sm:grid-cols-[minmax(0,1fr)_13rem] md:gap-12 lg:grid-cols-[minmax(0,1fr)_14rem]">
-								<div>
-									<div class="flex items-center gap-4">
-										<MoonPhase id={`phase-${i}`} class={`${step.moon} size-9 shrink-0 text-moon-navy`} />
-										<p class="caps">{step.phase}</p>
-									</div>
-									<h3 class="mt-6 text-[clamp(2rem,1.6rem+1.2vw,2.75rem)] leading-[1.15]">{step.title}</h3>
-									<p class="mt-4 max-w-sm">{step.text}</p>
-								</div>
-								<Picture
-									src={step.photo}
-									alt={step.alt}
-									widths={[400, 640, 840]}
-									sizes="(min-width: 640px) 14rem, 100vw"
-									formats={formats}
-									class:list={[step.crop, "aspect-4/3 w-full object-cover sm:aspect-4/5"]}
-								/>
-							</li>
-						))
-					}
-				</ol>
-			</div>
-			<p class="reveal mt-24 text-center md:mt-32">
-				<a href="/services/" class="button-solid">See the birth support package</a>
-			</p>
 		</div>
 	</section>
 

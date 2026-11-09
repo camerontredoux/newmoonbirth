@@ -1,7 +1,15 @@
 ---
+import { Picture } from "astro:assets";
 import ArchPhoto from "../components/ArchPhoto.astro";
+import MoonPhase from "../components/MoonPhase.astro";
 import Base from "../layouts/Base.astro";
 import handsPhoto from "../assets/photos/hands-blanket.jpg";
+import teaPhoto from "../assets/photos/tea-blanket.jpg";
+import bellySupportPhoto from "../assets/photos/belly-support.jpg";
+import babyHandPhoto from "../assets/photos/baby-hand.jpg";
+import newbornChestPhoto from "../assets/photos/newborn-chest.jpg";
+
+const formats = ["avif", "webp"];
 
 // The figures and their wording are from Starlee's brochure, which cites this review.
 const source = {
@@ -14,6 +22,47 @@ const findings = [
 	{ figure: "31%", text: "Lower likelihood of having negative feelings about your birth experience." },
 	{ figure: "41", unit: "minutes", text: "Shorter average labor duration." },
 	{ figure: "8%", text: "Greater likelihood of spontaneous vaginal birth." },
+];
+
+// "Support through every phase". Each step has its own moon phase, and the large moon beside the list matches it.
+// On phones the photos are cropped wider, and `crop` keeps the faces and hands in the frame.
+const phases = [
+	{
+		moon: "moon-new",
+		phase: "New moon",
+		title: "A first conversation",
+		photo: teaPhoto,
+		alt: "A mustard mug of tea on a saucer, set on a chunky cream knit blanket",
+		crop: "object-[50%_35%]",
+		text: "It starts with a free consultation, a chance to ask your questions and see if we’re a good fit.",
+	},
+	{
+		moon: "moon-waxing",
+		phase: "Waxing moon",
+		title: "Pregnancy",
+		photo: bellySupportPhoto,
+		alt: "A woman in a linen dress rests her hands on a pregnant woman’s belly in a sunny room",
+		crop: "object-[50%_45%]",
+		text: "Two prenatal visits to get to know each other, talk through your hopes and preferences for birth, and prepare for labor. In between, I’m a text or call away.",
+	},
+	{
+		moon: "moon-full",
+		phase: "Full moon",
+		title: "Birth",
+		photo: babyHandPhoto,
+		alt: "A newborn’s hand wraps around a parent’s finger",
+		crop: "object-center",
+		text: "I’m on call for the two weeks before your due date. When labor begins, I join you and stay through your labor and birth, with hands-on comfort, encouragement, and support for your birth partner.",
+	},
+	{
+		moon: "moon-waning",
+		phase: "Waning moon",
+		title: "Postpartum",
+		photo: newbornChestPhoto,
+		alt: "A newborn sleeps on a parent’s shoulder",
+		crop: "object-center",
+		text: "Two postpartum visits to check in, talk about your birth experience, see how you’re doing, and support you as you settle into life with your new baby.",
+	},
 ];
 ---
 
@@ -77,7 +126,54 @@ const findings = [
 			<p class="reveal mt-16 max-w-2xl text-sm text-moon-ink/75">
 				Compared with no continuous support. Source: <a href={source.url} class="underline underline-offset-4 decoration-moon-gold hover:text-moon-navy">{source.title}</a>, {source.citation}.
 			</p>
-			<p class="reveal mt-20 md:mt-24">
+		</div>
+	</section>
+
+	<section aria-labelledby="phases-title" class="phases px-6 py-28 md:px-10 md:py-40">
+		<div class="mx-auto max-w-6xl">
+			<div class="reveal grid gap-6 md:grid-cols-2 md:items-end md:gap-20">
+				<div>
+					<p class="caps">How we’ll work together</p>
+					<h2 id="phases-title" class="mt-6 text-[clamp(2.5rem,1.75rem+2.4vw,4rem)] leading-[1.1]">
+						Support through every <span class="script text-moon-blue">phase</span>
+					</h2>
+				</div>
+				<p class="max-w-md">
+					My birth support package covers every phase, from our first conversation to the weeks after your baby arrives.
+				</p>
+			</div>
+			<div class="mt-20 md:mt-28 lg:grid lg:grid-cols-[5fr_7fr] lg:gap-24">
+				<div aria-hidden="true" class="hidden lg:block">
+					<div class="sticky top-[max(7rem,calc(50svh-11rem))]">
+						<MoonPhase id="phases-moon" class="phases-moon mx-auto w-full max-w-88 text-moon-navy" />
+					</div>
+				</div>
+				<ol class="phases-list mx-auto max-w-3xl space-y-20 md:space-y-28 lg:max-w-none">
+					{
+						phases.map((step, i) => (
+							<li class="reveal grid items-center gap-8 sm:grid-cols-[minmax(0,1fr)_13rem] md:gap-12 lg:grid-cols-[minmax(0,1fr)_14rem]">
+								<div>
+									<div class="flex items-center gap-4">
+										<MoonPhase id={`phase-${i}`} class={`${step.moon} size-9 shrink-0 text-moon-navy`} />
+										<p class="caps">{step.phase}</p>
+									</div>
+									<h3 class="mt-6 text-[clamp(2rem,1.6rem+1.2vw,2.75rem)] leading-[1.15]">{step.title}</h3>
+									<p class="mt-4 max-w-sm">{step.text}</p>
+								</div>
+								<Picture
+									src={step.photo}
+									alt={step.alt}
+									widths={[400, 640, 840]}
+									sizes="(min-width: 640px) 14rem, 100vw"
+									formats={formats}
+									class:list={[step.crop, "aspect-4/3 w-full object-cover sm:aspect-4/5"]}
+								/>
+							</li>
+						))
+					}
+				</ol>
+			</div>
+			<p class="reveal mt-24 text-center md:mt-32">
 				<a href="/services/" class="button-solid">See the birth support package</a>
 			</p>
 		</div>

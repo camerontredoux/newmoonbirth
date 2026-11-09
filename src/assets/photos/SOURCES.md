@@ -6,9 +6,9 @@ Except for `meet-starlee.jpg`, all photos are stock photos from [Pexels](https:/
 | :-- | :-- | :-- |
 | `hero-linen.jpg` | Hero | https://www.pexels.com/photo/5853196/ |
 | `meet-starlee.jpg` | "Hello, I’m Starlee", and the About page | Starlee’s own photo |
-| `tea-blanket.jpg` | "Support through every phase": a first conversation | https://www.pexels.com/photo/6690220/ |
-| `belly-support.jpg` | "Support through every phase": pregnancy | https://www.pexels.com/photo/8342537/ |
-| `baby-hand.jpg` | "Support through every phase": birth | https://www.pexels.com/photo/2721581/ |
-| `newborn-chest.jpg` | "Support through every phase": postpartum | https://www.pexels.com/photo/13071792/ |
+| `tea-blanket.jpg` | What is a doula page, "Support through every phase": a first conversation | https://www.pexels.com/photo/6690220/ |
+| `belly-support.jpg` | What is a doula page, "Support through every phase": pregnancy | https://www.pexels.com/photo/8342537/ |
+| `baby-hand.jpg` | What is a doula page, "Support through every phase": birth | https://www.pexels.com/photo/2721581/ |
+| `newborn-chest.jpg` | What is a doula page, "Support through every phase": postpartum | https://www.pexels.com/photo/13071792/ |
 | `pregnancy-window.jpg` | Services page | https://www.pexels.com/photo/3330724/ |
 | `hands-blanket.jpg` | What is a doula page | https://www.pexels.com/photo/6393346/ |
