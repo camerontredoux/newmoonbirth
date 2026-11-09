@@ -3,6 +3,9 @@
  * A thin navy outline with two small four-point stars on its sides, like the frames in Starlee's brochure. Put it last
  * inside a `relative` box that pads the photo, so the outline sits a little out from the photo's edges. `class` sets
  * the outline's corners, such as `rounded-t-full` for an arch. The stars twinkle only inside a `hover-twinkle` parent.
+ *
+ * The outline and stars are the same solid navy. The stars center on the outline's middle, half a pixel in from the
+ * box's edge.
  */
 interface Props {
 	class?: string;
@@ -14,11 +17,11 @@ const star = "M12 0 C12.8 7.5 16.5 11.2 24 12 C16.5 12.8 12.8 16.5 12 24 C11.2 1
 ---
 
 <span aria-hidden="true" class:list={["pointer-events-none absolute inset-0", className]}>
-	<span class="absolute inset-0 rounded-[inherit] border border-moon-navy/55"></span>
-	<svg viewBox="0 0 24 24" class="star absolute top-[42%] right-0 size-4 translate-x-1/2 text-moon-navy">
+	<span class="absolute inset-0 rounded-[inherit] border border-moon-navy"></span>
+	<svg viewBox="0 0 24 24" class="star absolute top-[42%] right-[0.5px] size-4 translate-x-1/2 text-moon-navy">
 		<path d={star} fill="currentColor"></path>
 	</svg>
-	<svg viewBox="0 0 24 24" class="star absolute top-[78%] left-0 size-3 -translate-x-1/2 text-moon-navy">
+	<svg viewBox="0 0 24 24" class="star absolute top-[78%] left-[0.5px] size-3 -translate-x-1/2 text-moon-navy">
 		<path d={star} fill="currentColor"></path>
 	</svg>
 </span>
