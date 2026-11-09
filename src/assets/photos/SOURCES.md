@@ -10,5 +10,5 @@ Except for `meet-starlee.jpg`, all photos are stock photos from [Pexels](https:/
 | `pregnancy-hands.jpg` | What is a doula page, "Support through every phase": pregnancy | https://www.pexels.com/photo/25559069/ |
 | `baby-hand.jpg` | What is a doula page, "Support through every phase": birth | https://www.pexels.com/photo/2721581/ |
 | `postpartum-window.jpg` | What is a doula page, "Support through every phase": postpartum | https://www.pexels.com/photo/34566655/ |
-| `pregnancy-window.jpg` | Services page | https://www.pexels.com/photo/3330724/ |
+| `services-mat.jpg` | Services page | Supplied by the site owner (`services.jpg`), resized to 1600px wide |
 | `hands-blanket.jpg` | What is a doula page | https://www.pexels.com/photo/6393346/ |
