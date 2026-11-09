@@ -2,7 +2,7 @@
 import { Picture } from "astro:assets";
 import ArchPhoto from "../components/ArchPhoto.astro";
 import MoonPhase from "../components/MoonPhase.astro";
-import PencilFrame from "../components/PencilFrame.astro";
+import StarFrame from "../components/StarFrame.astro";
 import Base from "../layouts/Base.astro";
 import handsPhoto from "../assets/photos/hands-blanket.jpg";
 import teaPhoto from "../assets/photos/tea-blanket.jpg";
@@ -143,7 +143,7 @@ const phases = [
 				{
 					phases.map((step, i) => (
 						<li style={`--reveal-step: ${i}`} class="reveal hover-sketch">
-							<div class="relative">
+							<div class="relative p-3">
 								<div data-light class="relative overflow-hidden">
 									<Picture
 										src={step.photo}
@@ -155,7 +155,7 @@ const phases = [
 									/>
 									<span aria-hidden="true" class="moonlight"></span>
 								</div>
-								<PencilFrame />
+								<StarFrame />
 							</div>
 							<div class="mt-8 flex items-center gap-4">
 								<MoonPhase id={`phase-${i}`} class={`${step.moon} size-9 shrink-0 text-moon-navy`} />
