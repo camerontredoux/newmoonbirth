@@ -1,9 +1,12 @@
 import { type FormEvent, useEffect, useRef, useState } from "react";
-import { type ContactResult, honeypotField, turnstileSiteKey } from "../lib/contact";
+import { type ContactResult, honeypotField, turnstileAction, turnstileSiteKey } from "../lib/contact";
 
 // The parts of Cloudflare's Turnstile script this form uses.
 interface Turnstile {
-  render(container: HTMLElement, options: { sitekey: string; appearance?: "always" | "execute" | "interaction-only" }): string;
+  render(
+    container: HTMLElement,
+    options: { sitekey: string; action?: string; appearance?: "always" | "execute" | "interaction-only" },
+  ): string;
   reset(widgetId: string): void;
   remove(widgetId: string): void;
 }
@@ -47,7 +50,11 @@ export default function ContactForm() {
       .then((turnstile) => {
         if (cancelled || !turnstileBox.current) return;
         // Only shows a challenge when Cloudflare isn't sure the visitor is a person.
-        widgetId.current = turnstile.render(turnstileBox.current, { sitekey: turnstileSiteKey, appearance: "interaction-only" });
+        widgetId.current = turnstile.render(turnstileBox.current, {
+          sitekey: turnstileSiteKey,
+          action: turnstileAction,
+          appearance: "interaction-only",
+        });
       })
       .catch(() => !cancelled && setTurnstileFailed(true));
     return () => {

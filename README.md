@@ -16,7 +16,7 @@ The home page, header, and footer are designed. The other pages are unstyled pla
 | Other pages | What is a doula, Services, and Contact are designed, with copy from Starlee's brochure. The package price is not set yet (`price` in `services.astro`). Billing help is still placeholder content. |
 | Navigation | Done. Below 1280px wide, a **Menu** button opens a full-screen menu. |
 | Color palette | Done, taken from the logo |
-| Contact form | Posts to `/api/contact/`, which checks a honeypot field and Cloudflare Turnstile, then emails Starlee through Cloudflare Email Routing. Production needs the real Turnstile site key in `src/lib/contact.ts` and the Worker secrets below. |
+| Contact form | Posts to `/api/contact/`, which checks a honeypot field and Cloudflare Turnstile, then emails Starlee through Cloudflare Email Routing. Production needs the Worker secrets below. |
 | Booking | Visitors book a free consultation through the contact form. |
 | Billing | Explanation only. An optional Stripe or Square invoice link goes on the Billing page. |
 
@@ -46,11 +46,11 @@ The home page, header, and footer are designed. The other pages are unstyled pla
 
    Git ignores `.env`. Do not commit it.
 
-3. For the contact form under `pnpm dev`, copy `.dev.vars.example` to `.dev.vars`. It holds Turnstile's test secret and the address messages go to. In `pnpm dev`, the Worker logs each email to the console instead of sending it.
+3. For the contact form under `pnpm dev`, copy `.dev.vars.example` to `.dev.vars`. It holds Turnstile's test secret, the hostname the test secret reports, and the address messages go to. In `pnpm dev`, the Worker logs each email to the console instead of sending it.
 
    Production needs two Worker secrets, set with `pnpm exec wrangler secret put <NAME>`:
 
-   - `TURNSTILE_SECRET_KEY`: the secret of the Turnstile widget for newmoonbirth.com.
+   - `TURNSTILE_SECRET_KEY`: the secret of the Turnstile widget for newmoonbirth.com. Its public site key is in `src/lib/contact.ts`.
    - `CONTACT_EMAIL_TO`: the address messages go to. It must be a verified destination address in Cloudflare Email Routing.
 
    After changing `wrangler.jsonc`, run `pnpm generate-types` to update `worker-configuration.d.ts`.

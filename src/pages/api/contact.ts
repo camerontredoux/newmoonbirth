@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
-import { type ContactResult, honeypotField } from "../../lib/contact";
+import { type ContactResult, honeypotField, turnstileAction } from "../../lib/contact";
 
 // The contact form posts here. This route runs in the Worker; every page is prerendered.
 export const prerender = false;
@@ -75,17 +75,36 @@ export const POST: APIRoute = async ({ request }) => {
 	return reply({ ok: true });
 };
 
+type Siteverify = {
+	success?: boolean;
+	hostname?: string;
+	action?: string;
+	"error-codes"?: string[];
+	metadata?: { result_with_testing_key?: boolean };
+};
+
 // Asks Cloudflare whether the visitor passed the Turnstile check. Each token works once, for five minutes.
+// The check must also come from our own widget, on one of our hostnames. Cloudflare's test secret, used in
+// `astro dev`, reports the hostname example.com and no action.
 async function passedTurnstile(token: string, ip: string | null): Promise<boolean> {
-	if (!token) return false;
-	const body = new FormData();
-	body.append("secret", env.TURNSTILE_SECRET_KEY);
-	body.append("response", token);
+	const hostnames = env.TURNSTILE_HOSTNAMES.split(",").map((hostname) => hostname.trim()).filter(Boolean);
+	if (!token || token.length > 2048 || hostnames.length === 0) return false;
+	const body = new URLSearchParams({ secret: env.TURNSTILE_SECRET_KEY, response: token });
 	if (ip) body.append("remoteip", ip);
 	try {
-		const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body });
-		const result: { success?: boolean } = await response.json();
-		return result.success === true;
+		const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+			method: "POST",
+			body,
+			signal: AbortSignal.timeout(10_000),
+		});
+		if (!response.ok) throw new Error(`Siteverify answered ${response.status}`);
+		const result: Siteverify = await response.json();
+		if (result.success !== true) {
+			console.warn("Turnstile rejected a token", result["error-codes"]);
+			return false;
+		}
+		const testing = result.metadata?.result_with_testing_key === true;
+		return hostnames.includes(result.hostname ?? "") && (testing || result.action === turnstileAction);
 	} catch (error) {
 		console.error("Turnstile check failed", error);
 		return false;

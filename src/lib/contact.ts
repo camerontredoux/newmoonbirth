@@ -8,7 +8,10 @@ export const honeypotField = "website";
 
 /**
  * The Turnstile widget's public site key. `astro dev` uses Cloudflare's test key, which always passes and pairs with
- * the test secret in `.dev.vars.example`. Production needs the key of the real widget for newmoonbirth.com, and its
- * secret set as the Worker secret TURNSTILE_SECRET_KEY.
+ * the test secret in `.dev.vars.example`. Production uses the widget for newmoonbirth.com, whose secret is the Worker
+ * secret TURNSTILE_SECRET_KEY.
  */
-export const turnstileSiteKey = import.meta.env.DEV ? "1x00000000000000000000AA" : "";
+export const turnstileSiteKey = import.meta.env.DEV ? "1x00000000000000000000AA" : "0x4AAAAAAF6gqgBgUOSGCcOS";
+
+/** The Turnstile action the form's widget reports, which the route checks. */
+export const turnstileAction = "contact";

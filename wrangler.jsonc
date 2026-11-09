@@ -16,6 +16,10 @@
 	"observability": {
 		"enabled": true
 	},
+	// The contact form accepts a Turnstile check only from these hostnames. `.dev.vars` replaces them in `astro dev`.
+	"vars": {
+		"TURNSTILE_HOSTNAMES": "newmoonbirth.com,www.newmoonbirth.com"
+	},
 	// The contact form emails Starlee through Cloudflare Email Routing. The secret CONTACT_EMAIL_TO holds the address,
 	// which must be a verified Email Routing destination.
 	"send_email": [{ "name": "EMAIL" }]
