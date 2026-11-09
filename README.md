@@ -2,7 +2,7 @@
 
 Website for New Moon Birth, the doula practice of Starlee Brown. Starlee is based in Washougal, WA. She serves north Oregon and southwest Washington: Portland and Gresham, OR, and Vancouver, Camas, and Washougal, WA.
 
-The site is the landing page for all business inquiries. It explains doula services and lets clients send a message, book a consultation, and get billing help.
+The site is the landing page for all business inquiries. It explains doula services and pricing, and lets clients send a message and book a consultation.
 
 Live site: https://newmoonbirth.com
 
@@ -13,12 +13,12 @@ The home page, header, and footer are designed. The other pages are unstyled pla
 | Feature | Status |
 | :-- | :-- |
 | Home page | Designed. Copy is a draft for Starlee to review. Photos are stock stand-ins. |
-| Other pages | What is a doula, Services, and Contact are designed, with copy from Starlee's brochure. The package price is not set yet (`price` in `services.astro`). Billing help is still placeholder content. |
+| Other pages | What is a doula, Services, and Contact are designed, with copy from Starlee's brochure. The package price is a sliding scale (`price` in `services.astro`). |
 | Navigation | Done. Below 1280px wide, a **Menu** button opens a full-screen menu. |
 | Color palette | Done, taken from the logo |
 | Contact form | Posts to `/api/contact/`, which checks a honeypot field and Cloudflare Turnstile, then emails Starlee through Cloudflare Email Routing. Production needs the Worker secrets below. |
 | Booking | Visitors book a free consultation through the contact form. |
-| Billing | Explanation only. An optional Stripe or Square invoice link goes on the Billing page. |
+| Billing | Removed. `/billing/` redirects to Services, which shows the price. |
 
 ## Stack
 
@@ -93,7 +93,6 @@ src/
     what-is-a-doula.astro  /what-is-a-doula/
     services.astro         /services/
     contact.astro          /contact/
-    billing.astro          /billing/
   styles/
     global.css             Tailwind import, color palette, fonts, and shared utilities
 wrangler.jsonc             Cloudflare Worker and custom domain config

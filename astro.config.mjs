@@ -14,9 +14,11 @@ export default defineConfig({
   trailingSlash: 'always',
   integrations: [react(), sitemap()],
 
-  // The About page was folded into the home page's "Hello, I'm Starlee" section. Old links land there.
+  // Old links to removed pages. The About page was folded into the home page's "Hello, I'm Starlee" section, and
+  // pricing replaced the Billing help page on the Services page.
   redirects: {
     '/about/': '/',
+    '/billing/': '/services/',
   },
 
   fonts: [

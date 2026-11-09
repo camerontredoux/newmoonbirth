@@ -5,7 +5,14 @@ import { type ContactResult, honeypotField, turnstileAction, turnstileSiteKey } 
 interface Turnstile {
   render(
     container: HTMLElement,
-    options: { sitekey: string; action?: string; appearance?: "always" | "execute" | "interaction-only" },
+    options: {
+      sitekey: string;
+      action?: string;
+      theme?: "auto" | "light" | "dark";
+      appearance?: "always" | "execute" | "interaction-only";
+      callback?: (token: string) => void;
+      "before-interactive-callback"?: () => void;
+    },
   ): string;
   reset(widgetId: string): void;
   remove(widgetId: string): void;
@@ -43,22 +50,36 @@ export default function ContactForm() {
   const turnstileBox = useRef<HTMLDivElement>(null);
   const widgetId = useRef<string | undefined>(undefined);
   const [turnstileFailed, setTurnstileFailed] = useState(false);
+  const [challengeDone, setChallengeDone] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
+    let fadeTimer: ReturnType<typeof setTimeout> | undefined;
     loadTurnstile()
       .then((turnstile) => {
         if (cancelled || !turnstileBox.current) return;
-        // Only shows a challenge when Cloudflare isn't sure the visitor is a person.
+        // Depending on the widget's mode, Cloudflare may show a box while it checks the visitor, or ask for a click.
+        // The box always uses the light theme, to sit on the cream page. It fades away shortly after it says
+        // "Success!", and comes back if Cloudflare asks for a click.
         widgetId.current = turnstile.render(turnstileBox.current, {
           sitekey: turnstileSiteKey,
           action: turnstileAction,
+          theme: "light",
           appearance: "interaction-only",
+          callback: () => {
+            clearTimeout(fadeTimer);
+            fadeTimer = setTimeout(() => setChallengeDone(true), 1500);
+          },
+          "before-interactive-callback": () => {
+            clearTimeout(fadeTimer);
+            setChallengeDone(false);
+          },
         });
       })
       .catch(() => !cancelled && setTurnstileFailed(true));
     return () => {
       cancelled = true;
+      clearTimeout(fadeTimer);
       if (widgetId.current) window.turnstile?.remove(widgetId.current);
       widgetId.current = undefined;
     };
@@ -143,7 +164,11 @@ export default function ContactForm() {
         </label>
       </div>
       <div className="sm:col-span-2">
-        <div ref={turnstileBox} />
+        <div
+          className={`grid motion-safe:transition-[grid-template-rows,opacity] motion-safe:duration-700 ${challengeDone ? "grid-rows-[0fr] opacity-0" : "grid-rows-[1fr]"}`}
+        >
+          <div ref={turnstileBox} className="overflow-hidden" />
+        </div>
         {turnstileFailed && (
           <p className="text-sm">
             The spam check didn’t load. If sending fails, email{" "}

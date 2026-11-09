@@ -27,16 +27,15 @@ const parts = [
 	},
 ];
 
-// The package price as it should read on the page, for example "$1,200". Until Starlee sets it, the page asks visitors
-// to get in touch for pricing.
-const price: string | undefined = undefined;
+// The package price, on a sliding scale.
+const price = "$500–$750";
 
 const star = "M12 0 C12.8 7.5 16.5 11.2 24 12 C16.5 12.8 12.8 16.5 12 24 C11.2 16.5 7.5 12.8 0 12 C7.5 11.2 11.2 7.5 12 0 Z";
 ---
 
 <Base
 	title="Services"
-	description="The New Moon Birth birth support package: two prenatal visits, two weeks on call, text and phone support, continuous labor support, and two postpartum visits."
+	description="The New Moon Birth birth support package: two prenatal visits, two weeks on call, text and phone support, continuous labor support, and two postpartum visits. Sliding scale, $500–$750."
 >
 	<Fragment slot="heading">My birth support <span class="script text-moon-blue">package</span></Fragment>
 
@@ -68,18 +67,13 @@ const star = "M12 0 C12.8 7.5 16.5 11.2 24 12 C16.5 12.8 12.8 16.5 12 24 C11.2 1
 					}
 				</ol>
 				<div class="reveal mt-16 border-y border-moon-gold/70 py-10 md:mt-20">
-					<p class="caps">Pricing</p>
-					{
-						price ? (
-							<p class="mt-4 font-display text-[clamp(2.5rem,2rem+1.6vw,3.5rem)] leading-none text-moon-navy">{price}</p>
-						) : (
-							<p class="mt-4 font-display text-[clamp(1.75rem,1.5rem+0.8vw,2.25rem)] leading-[1.2] text-moon-navy">
-								Get in touch for current pricing
-							</p>
-						)
-					}
-					<p class="mt-4 max-w-md">
-						The first conversation is free. <a href="/billing/" class="underline underline-offset-4 decoration-moon-gold hover:text-moon-navy">Billing help</a> covers ways to pay.
+					<p class="caps">Sliding scale</p>
+					<p class="mt-4 font-display text-[clamp(2.5rem,2rem+1.6vw,3.5rem)] leading-none text-moon-navy">{price}</p>
+					<p class="mt-6 max-w-lg">
+						I’m a student doula gaining experience. My rates are flexible, and I’m open to discussing them.
+					</p>
+					<p class="mt-4 max-w-lg">
+						The first conversation is free. <a href="/contact/" class="underline underline-offset-4 decoration-moon-gold hover:text-moon-navy">Get in touch</a> and we can talk it through.
 					</p>
 				</div>
 			</div>
