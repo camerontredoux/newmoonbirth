@@ -39,7 +39,12 @@ function loadTurnstile(): Promise<Turnstile> {
   return turnstileLoaded;
 }
 
-type Status = { state: "idle" | "sending" | "sent" } | { state: "failed"; error: string; field?: string };
+type Status =
+  | { state: "idle" | "sending" }
+  | { state: "sent"; email: string }
+  | { state: "failed"; error: string; field?: string };
+
+const headingClass = "font-display text-[clamp(2rem,1.6rem+1.2vw,2.75rem)] leading-[1.15] text-moon-navy";
 
 const inputClass =
   "mt-2 block w-full rounded-none border-0 border-b border-moon-navy/35 bg-transparent px-0 py-2.5 text-moon-ink placeholder:text-moon-ink/40 focus:border-moon-navy focus:ring-0 focus:outline-none aria-invalid:border-b-2 aria-invalid:border-moon-navy";
@@ -47,6 +52,7 @@ const inputClass =
 /** The contact form. It posts to /api/contact/, which checks Turnstile and emails Starlee. */
 export default function ContactForm() {
   const [status, setStatus] = useState<Status>({ state: "idle" });
+  const thanks = useRef<HTMLHeadingElement>(null);
   const turnstileBox = useRef<HTMLDivElement>(null);
   const widgetId = useRef<string | undefined>(undefined);
   const [turnstileFailed, setTurnstileFailed] = useState(false);
@@ -85,12 +91,18 @@ export default function ContactForm() {
     };
   }, []);
 
+  // The thank-you replaces the form, and the button that had focus with it, so focus moves to the thank-you.
+  useEffect(() => {
+    if (status.state === "sent") thanks.current?.focus();
+  }, [status.state]);
+
   async function send(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus({ state: "sending" });
+    const form = new FormData(event.currentTarget);
     let result: ContactResult;
     try {
-      const response = await fetch("/api/contact/", { method: "POST", body: new FormData(event.currentTarget) });
+      const response = await fetch("/api/contact/", { method: "POST", body: form });
       result = await response.json();
     } catch {
       result = { ok: false, error: "Your message didn’t send. Check your connection and try again." };
@@ -105,16 +117,23 @@ export default function ContactForm() {
         window.turnstile?.reset(widgetId.current);
       }
     }
-    setStatus(result.ok ? { state: "sent" } : { state: "failed", error: result.error, field: result.field });
+    setStatus(
+      result.ok
+        ? { state: "sent", email: String(form.get("email") ?? "").trim() }
+        : { state: "failed", error: result.error, field: result.field },
+    );
   }
 
   if (status.state === "sent") {
     return (
-      <div role="status" className="py-10">
-        <p className="font-display text-[clamp(2rem,1.6rem+1.2vw,2.75rem)] leading-[1.15] text-moon-navy">
+      <div>
+        <p className="caps">Message sent</p>
+        <h2 ref={thanks} tabIndex={-1} className={`mt-4 ${headingClass} outline-none`}>
           Thank you. Your message is on its way to Starlee.
+        </h2>
+        <p className="mt-6 max-w-md">
+          She’ll reply to <span className="break-all text-moon-navy">{status.email}</span>.
         </p>
-        <p className="mt-4">She’ll reply to the email address you gave.</p>
       </div>
     );
   }
@@ -123,70 +142,73 @@ export default function ContactForm() {
   const invalid = (field: string) => (failed?.field === field ? { "aria-invalid": true, "aria-describedby": "contact-error" } : {});
 
   return (
-    <form onSubmit={send} className="relative grid gap-x-8 gap-y-8 sm:grid-cols-2">
-      <label className="block">
-        <span className="caps">Name</span>
-        <input name="name" required maxLength={200} autoComplete="name" className={inputClass} {...invalid("name")} />
-      </label>
-      <label className="block">
-        <span className="caps">Email</span>
-        <input name="email" type="email" required maxLength={254} autoComplete="email" className={inputClass} {...invalid("email")} />
-      </label>
-      <label className="block">
-        <span className="caps">
-          Phone <span className="text-moon-ink/50 normal-case tracking-normal">(optional)</span>
-        </span>
-        <input name="phone" type="tel" maxLength={40} autoComplete="tel" className={inputClass} {...invalid("phone")} />
-      </label>
-      <label className="block">
-        <span className="caps">
-          Due date <span className="text-moon-ink/50 normal-case tracking-normal">(optional)</span>
-        </span>
-        <input name="dueDate" type="date" className={inputClass} {...invalid("dueDate")} />
-      </label>
-      <label className="block sm:col-span-2">
-        <span className="caps">Message</span>
-        <textarea
-          name="message"
-          required
-          rows={5}
-          maxLength={5000}
-          placeholder="Tell me a little about you and the support you’re looking for."
-          className={`${inputClass} resize-y`}
-          {...invalid("message")}
-        />
-      </label>
-      {/* The honeypot. It's hidden from people and screen readers, so only a bot fills it in. */}
-      <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
-        <label>
-          Leave this empty
-          <input name={honeypotField} tabIndex={-1} autoComplete="off" />
+    <>
+      <h2 className={headingClass}>Send a message</h2>
+      <form onSubmit={send} className="relative mt-10 grid gap-x-8 gap-y-8 sm:grid-cols-2">
+        <label className="block">
+          <span className="caps">Name</span>
+          <input name="name" required maxLength={200} autoComplete="name" className={inputClass} {...invalid("name")} />
         </label>
-      </div>
-      <div className="sm:col-span-2">
-        <div
-          className={`grid motion-safe:transition-[grid-template-rows,opacity] motion-safe:duration-700 ${challengeDone ? "grid-rows-[0fr] opacity-0" : "grid-rows-[1fr]"}`}
-        >
-          <div ref={turnstileBox} className="overflow-hidden" />
+        <label className="block">
+          <span className="caps">Email</span>
+          <input name="email" type="email" required maxLength={254} autoComplete="email" className={inputClass} {...invalid("email")} />
+        </label>
+        <label className="block">
+          <span className="caps">
+            Phone <span className="text-moon-ink/50 normal-case tracking-normal">(optional)</span>
+          </span>
+          <input name="phone" type="tel" maxLength={40} autoComplete="tel" className={inputClass} {...invalid("phone")} />
+        </label>
+        <label className="block">
+          <span className="caps">
+            Due date <span className="text-moon-ink/50 normal-case tracking-normal">(optional)</span>
+          </span>
+          <input name="dueDate" type="date" className={inputClass} {...invalid("dueDate")} />
+        </label>
+        <label className="block sm:col-span-2">
+          <span className="caps">Message</span>
+          <textarea
+            name="message"
+            required
+            rows={5}
+            maxLength={5000}
+            placeholder="Tell me a little about you and the support you’re looking for."
+            className={`${inputClass} resize-y`}
+            {...invalid("message")}
+          />
+        </label>
+        {/* The honeypot. It's hidden from people and screen readers, so only a bot fills it in. */}
+        <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+          <label>
+            Leave this empty
+            <input name={honeypotField} tabIndex={-1} autoComplete="off" />
+          </label>
         </div>
-        {turnstileFailed && (
-          <p className="text-sm">
-            The spam check didn’t load. If sending fails, email{" "}
-            <a href="mailto:starlee@newmoonbirth.com" className="underline underline-offset-4">
-              starlee@newmoonbirth.com
-            </a>{" "}
-            instead.
-          </p>
-        )}
-        {failed && (
-          <p id="contact-error" role="alert" className="mb-6 border-l-2 border-moon-gold pl-4 font-medium text-moon-navy">
-            {failed.error}
-          </p>
-        )}
-        <button type="submit" disabled={status.state === "sending"} className="button-solid cursor-pointer disabled:opacity-60">
-          {status.state === "sending" ? "Sending…" : "Send message"}
-        </button>
-      </div>
-    </form>
+        <div className="sm:col-span-2">
+          <div
+            className={`grid motion-safe:transition-[grid-template-rows,opacity] motion-safe:duration-700 ${challengeDone ? "grid-rows-[0fr] opacity-0" : "grid-rows-[1fr]"}`}
+          >
+            <div ref={turnstileBox} className="overflow-hidden" />
+          </div>
+          {turnstileFailed && (
+            <p className="text-sm">
+              The spam check didn’t load. If sending fails, email{" "}
+              <a href="mailto:starlee@newmoonbirth.com" className="underline underline-offset-4">
+                starlee@newmoonbirth.com
+              </a>{" "}
+              instead.
+            </p>
+          )}
+          {failed && (
+            <p id="contact-error" role="alert" className="mb-6 border-l-2 border-moon-gold pl-4 font-medium text-moon-navy">
+              {failed.error}
+            </p>
+          )}
+          <button type="submit" disabled={status.state === "sending"} className="button-solid cursor-pointer disabled:opacity-60">
+            {status.state === "sending" ? "Sending…" : "Send message"}
+          </button>
+        </div>
+      </form>
+    </>
   );
 }
