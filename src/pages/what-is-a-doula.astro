@@ -24,7 +24,7 @@ const findings = [
 	{ figure: "8%", text: "Greater likelihood of spontaneous vaginal birth." },
 ];
 
-// "Support through every phase". Each step has its own moon phase, and the large moon beside the list matches it.
+// "Support through every phase". Each step has its own moon phase.
 // On phones the photos are cropped wider, and `crop` keeps the faces and hands in the frame.
 const phases = [
 	{
@@ -129,7 +129,7 @@ const phases = [
 		</div>
 	</section>
 
-	<section aria-labelledby="phases-title" class="phases px-6 py-28 md:px-10 md:py-40">
+	<section aria-labelledby="phases-title" class="px-6 py-28 md:px-10 md:py-40">
 		<div class="mx-auto max-w-6xl">
 			<div class="reveal grid gap-6 md:grid-cols-2 md:items-end md:gap-20">
 				<div>
@@ -142,38 +142,29 @@ const phases = [
 					My birth support package covers every phase, from our first conversation to the weeks after your baby arrives.
 				</p>
 			</div>
-			<div class="mt-20 md:mt-28 lg:grid lg:grid-cols-[5fr_7fr] lg:gap-24">
-				<div aria-hidden="true" class="hidden lg:block">
-					<div class="sticky top-[max(7rem,calc(50svh-11rem))]">
-						<MoonPhase id="phases-moon" class="phases-moon mx-auto w-full max-w-88 text-moon-navy" />
-					</div>
-				</div>
-				<ol class="phases-list mx-auto max-w-3xl space-y-20 md:space-y-28 lg:max-w-none">
-					{
-						phases.map((step, i) => (
-							<li class="reveal grid items-center gap-8 sm:grid-cols-[minmax(0,1fr)_13rem] md:gap-12 lg:grid-cols-[minmax(0,1fr)_14rem]">
-								<div>
-									<div class="flex items-center gap-4">
-										<MoonPhase id={`phase-${i}`} class={`${step.moon} size-9 shrink-0 text-moon-navy`} />
-										<p class="caps">{step.phase}</p>
-									</div>
-									<h3 class="mt-6 text-[clamp(2rem,1.6rem+1.2vw,2.75rem)] leading-[1.15]">{step.title}</h3>
-									<p class="mt-4 max-w-sm">{step.text}</p>
-								</div>
-								<Picture
-									src={step.photo}
-									alt={step.alt}
-									widths={[400, 640, 840]}
-									sizes="(min-width: 640px) 14rem, 100vw"
-									formats={formats}
-									class:list={[step.crop, "aspect-4/3 w-full object-cover sm:aspect-4/5"]}
-								/>
-							</li>
-						))
-					}
-				</ol>
-			</div>
-			<p class="reveal mt-24 text-center md:mt-32">
+			<ol class="mt-20 grid gap-x-10 gap-y-16 md:mt-28 md:grid-cols-2 md:gap-x-12 lg:grid-cols-4 lg:gap-x-10">
+				{
+					phases.map((step, i) => (
+						<li style={`--reveal-step: ${i}`} class="reveal">
+							<Picture
+								src={step.photo}
+								alt={step.alt}
+								widths={[400, 640, 840]}
+								sizes="(min-width: 1024px) 16rem, (min-width: 768px) 45vw, 100vw"
+								formats={formats}
+								class:list={[step.crop, "aspect-4/3 w-full object-cover md:aspect-4/5"]}
+							/>
+							<div class="mt-8 flex items-center gap-4">
+								<MoonPhase id={`phase-${i}`} class={`${step.moon} size-9 shrink-0 text-moon-navy`} />
+								<p class="caps">{step.phase}</p>
+							</div>
+							<h3 class="mt-5 text-[clamp(1.75rem,1.5rem+0.8vw,2.25rem)] leading-[1.15]">{step.title}</h3>
+							<p class="mt-4 max-w-sm">{step.text}</p>
+						</li>
+					))
+				}
+			</ol>
+			<p class="reveal mt-20 text-center md:mt-28">
 				<a href="/services/" class="button-solid">See the birth support package</a>
 			</p>
 		</div>

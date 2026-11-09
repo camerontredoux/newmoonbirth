@@ -287,41 +287,6 @@
 .moon-waning { --moon-wax: 1; --moon-wane: 0.6; }
 
 /*
- * "Support through every phase" on the What is a doula page. On wide screens a large moon stays in view beside the four
- * phases. As the list scrolls past, the moon goes from new, to waxing, to full, to waning, to match the phase in
- * the middle of the screen. Without scroll-driven animation support, or with reduced motion, it stays full.
- */
-.phases {
-  timeline-scope: --phases;
-}
-
-.phases-list {
-  view-timeline: --phases block;
-}
-
-.phases-moon {
-  filter: drop-shadow(0 0 3rem color-mix(in oklab, var(--color-moon-cream) 85%, transparent));
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .phases-moon {
-      animation: phases-moon linear both;
-      animation-timeline: --phases;
-      animation-range: cover 0% cover 100%;
-    }
-  }
-}
-
-/* Each phase holds while its step is near the middle of the screen. The step positions were measured in a browser. */
-@keyframes phases-moon {
-  0%, 28% { --moon-wax: 0; --moon-wane: 0; }
-  36%, 46% { --moon-wax: 0.4; --moon-wane: 0; }
-  54%, 64% { --moon-wax: 1; --moon-wane: 0; }
-  72%, 100% { --moon-wax: 1; --moon-wane: 0.6; }
-}
-
-/*
  * The service area map on the home page, drawn by ServiceAreaMap.astro. As it scrolls into view, the river banks
  * trace themselves in, the water and the place names fade in, and then the towns appear one by one, each growing from
  * its dot. Without scroll-driven animation support, or with reduced motion, the map shows complete.
