@@ -235,6 +235,23 @@
   filter: brightness(0.9) contrast(1.2) saturate(1.4);
 }
 
+/*
+ * Page transitions: pages crossfade into each other, using the browser's own cross-document view
+ * transitions, with no script. Only the page fades, nothing moves, so the header looks still.
+ * Browsers without view transitions, and anyone who prefers reduced motion, change pages as usual.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.45s;
+  animation-timing-function: ease-in-out;
+}
+
 /* The logo's wordmark, traced into a vector mask so it stays sharp at any size and takes the current text color. */
 @utility wordmark {
   aspect-ratio: 1790 / 151;
