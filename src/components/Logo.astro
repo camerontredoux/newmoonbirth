@@ -1,28 +1,36 @@
 ---
 /*
- * The crescent moon beside the "NEW MOON BIRTH" wordmark. The moon is as tall as the letters.
+ * The crescent moon beside the "NEW MOON BIRTH" wordmark. The moon is twice as tall as the letters, and
+ * reaches above and below them without making the header taller.
  * Size it by the wordmark's width: pass `--wordmark-width` in `class`, for example `[--wordmark-width:10rem]`.
+ * Set `onLight` on a white or cream background, where the moon's pale side would fade into the page.
  */
 import { Picture } from "astro:assets";
 import moonMark from "../assets/moon-mark.png";
 
 interface Props {
 	class?: string;
+	onLight?: boolean;
 }
 
-const { class: className } = Astro.props;
+const { class: className, onLight = false } = Astro.props;
 ---
 
-<span class:list={["flex items-center gap-[calc(var(--wordmark-width)*0.05)]", className]}>
-	{/* 18px covers the tallest wordmark (13rem wide, 17.5px tall). */}
+<span
+	class:list={[
+		"flex items-center gap-[calc(var(--wordmark-width)*0.05)] [--letter-height:calc(var(--wordmark-width)*151/1790)]",
+		className,
+	]}
+>
+	{/* 36px covers the largest moon: twice the tallest letters (13rem wide, 17.5px tall). */}
 	<Picture
 		src={moonMark}
 		alt=""
-		height={18}
+		height={36}
 		densities={[1, 2, 3]}
 		formats={["avif", "webp"]}
 		loading="eager"
-		class="h-[calc(var(--wordmark-width)*151/1790)] w-auto"
+		class:list={["-my-[calc(var(--letter-height)/2)] h-[calc(var(--letter-height)*2)] w-auto", onLight && "moon-on-light"]}
 	/>
 	<span class="wordmark block w-(--wordmark-width)"></span>
 </span>

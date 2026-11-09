@@ -48,7 +48,10 @@ const current = (href: string) => (Astro.url.pathname === href ? "page" : undefi
 		]}
 	>
 		<a href="/" class="text-current" aria-label="New Moon Birth, home">
-			<Logo class:list={["[--wordmark-width:10rem]", overlay ? "md:[--wordmark-width:13rem]" : "md:[--wordmark-width:11rem]"]} />
+			<Logo
+				class:list={["[--wordmark-width:10rem]", overlay ? "md:[--wordmark-width:13rem]" : "md:[--wordmark-width:11rem]"]}
+				onLight={!overlay}
+			/>
 		</a>
 		<nav aria-label={floating ? "Main, sticky" : "Main"}>
 			<ul class="hidden gap-8 xl:flex">
