@@ -4,6 +4,7 @@
  * reaches above and below them without making the header taller.
  * Size it by the wordmark's width: pass `--wordmark-width` in `class`, for example `[--wordmark-width:10rem]`.
  * Set `onLight` on a white or cream background, where the moon's pale side would fade into the page.
+ * moon-mark.png is padded to exactly 8:9, so Astro's resized copies never trim the moon's edge.
  */
 import { Picture } from "astro:assets";
 import moonMark from "../assets/moon-mark.png";
@@ -22,12 +23,15 @@ const { class: className, onLight = false } = Astro.props;
 		className,
 	]}
 >
-	{/* 36px covers the largest moon: twice the tallest letters (13rem wide, 17.5px tall). */}
+	{/*
+		One copy, 6x the largest moon (twice the tallest letters, 17.5px), so it stays sharp when someone zooms in.
+		Browsers pick from a srcset only on page load, so zooming in after load would keep a small copy.
+		As AVIF it's under 5 KB.
+	*/}
 	<Picture
 		src={moonMark}
 		alt=""
-		height={36}
-		densities={[1, 2, 3]}
+		height={216}
 		formats={["avif", "webp"]}
 		loading="eager"
 		class:list={["-my-[calc(var(--letter-height)/2)] h-[calc(var(--letter-height)*2)] w-auto", onLight && "moon-on-light"]}

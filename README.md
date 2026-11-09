@@ -80,7 +80,7 @@ public/
   og-image.png             Share image for Facebook, X, and other link previews, 1200 x 630. It is logo-wide.png with a margin.
 src/
   assets/
-    moon-mark.png          Moon cut from logo.png with a transparent background, trimmed. The header and menu show it beside the wordmark
+    moon-mark.png          Moon cut from logo.png with a transparent background, the white paper edge shaved off, padded to 8:9. The header and menu show it beside the wordmark
     photos/                Stock photos. SOURCES.md lists where each one came from.
   components/
     ContactForm.tsx        React island for the contact form
