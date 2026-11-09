@@ -55,7 +55,9 @@ export const POST: APIRoute = async ({ request }) => {
 
 	try {
 		await env.EMAIL.send({
-			from: { name: "New Moon Birth website", email: "website@newmoonbirth.com" },
+			// Mail can only come from a newmoonbirth.com address, so the visitor's name goes in the sender name, and
+			// Reply-To sends replies to them.
+			from: { name: `${oneLine(name)} via New Moon Birth`, email: "website@newmoonbirth.com" },
 			to: env.CONTACT_EMAIL_TO,
 			replyTo: { name: oneLine(name), email },
 			subject: `Website message from ${oneLine(name)}`,

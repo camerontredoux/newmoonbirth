@@ -20,7 +20,6 @@
 	"vars": {
 		"TURNSTILE_HOSTNAMES": "newmoonbirth.com,www.newmoonbirth.com"
 	},
-	// The contact form emails Starlee through Cloudflare Email Routing. The secret CONTACT_EMAIL_TO holds the address,
-	// which must be a verified Email Routing destination.
+	// The contact form emails Starlee through Cloudflare Email Sending. The secret CONTACT_EMAIL_TO holds the address.
 	"send_email": [{ "name": "EMAIL" }]
 }

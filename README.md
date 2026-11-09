@@ -16,7 +16,7 @@ The home page, header, and footer are designed. The other pages are unstyled pla
 | Other pages | What is a doula, Services, and Contact are designed, with copy from Starlee's brochure. The package price is a sliding scale (`packagePrice` in `src/lib/price.ts`). |
 | Navigation | Done. Below 1280px wide, a **Menu** button opens a full-screen menu. |
 | Color palette | Done, taken from the logo |
-| Contact form | Posts to `/api/contact/`, which checks a honeypot field and Cloudflare Turnstile, then emails Starlee through Cloudflare Email Routing. Production needs the Worker secrets below. |
+| Contact form | Posts to `/api/contact/`, which checks a honeypot field and Cloudflare Turnstile, then emails Starlee through Cloudflare Email Sending. Production needs the Worker secrets below. |
 | Booking | Visitors book a free consultation through the contact form. |
 | Billing | Removed. `/billing/` redirects to Services, which shows the price. |
 
@@ -51,7 +51,7 @@ The home page, header, and footer are designed. The other pages are unstyled pla
    Production needs two Worker secrets, set with `pnpm exec wrangler secret put <NAME>`:
 
    - `TURNSTILE_SECRET_KEY`: the secret of the Turnstile widget for newmoonbirth.com. Its public site key is in `src/lib/contact.ts`.
-   - `CONTACT_EMAIL_TO`: the address messages go to. It must be a verified destination address in Cloudflare Email Routing.
+   - `CONTACT_EMAIL_TO`: the address messages go to, `starlee@newmoonbirth.com`. newmoonbirth.com is onboarded to Cloudflare Email Sending, which needs the Workers Paid plan. Without it, Cloudflare sends only to verified Email Routing destinations, such as the Gmail address that `starlee@` forwards to.
 
    After changing `wrangler.jsonc`, run `pnpm generate-types` to update `worker-configuration.d.ts`.
 
@@ -150,9 +150,9 @@ The site runs on Cloudflare Workers as the `newmoonbirth` Worker.
 
 - `wrangler.jsonc` attaches `newmoonbirth.com` and `www.newmoonbirth.com` as custom domains. Cloudflare creates their DNS records and HTTPS certificates.
 - A Single Redirect rule in the Cloudflare dashboard sends `www.newmoonbirth.com/*` to `https://newmoonbirth.com/${1}` with a 301. It keeps the path and query string. This rule is not in the repo. To change it, open the `newmoonbirth.com` zone in the dashboard and go to **Rules**.
-- The zone also has email records (MX, SPF, DKIM) for Cloudflare Email Routing. Do not remove them.
+- The zone has email records for Cloudflare Email Routing (MX and SPF at the root) and Email Sending (MX, SPF, and DKIM at `cf-bounce`, and DMARC at `_dmarc`). Do not remove them. Keep DMARC at `p=none`.
 
-All pages are static. The build makes an assets-only Worker, so Worker code does not run yet. That changes when the site gets a server route, such as the contact form endpoint.
+All pages are static except the contact form endpoint, `/api/contact/`, which runs in the Worker.
 
 ## SEO
 
