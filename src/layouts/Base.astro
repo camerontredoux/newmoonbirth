@@ -10,11 +10,9 @@ interface Props {
 	description: string;
 	/** Keeps the page out of search results, for example the 404 page. */
 	noindex?: boolean;
-	/** A small label above the h1, on a page without a hero. */
-	eyebrow?: string;
 }
 
-const { title, description, noindex = false, eyebrow } = Astro.props;
+const { title, description, noindex = false } = Astro.props;
 
 const siteName = "New Moon Birth";
 const fullTitle = `${title} | ${siteName}`;
@@ -183,7 +181,6 @@ const invite = Astro.url.pathname !== "/contact/";
 				<main>
 					<div class="px-6 pt-16 pb-14 md:px-10 md:pt-24 md:pb-20">
 						<div class="mx-auto max-w-6xl">
-							{eyebrow && <p class="caps mb-6">{eyebrow}</p>}
 							<h1 class="max-w-4xl text-[clamp(3rem,2rem+3.6vw,5.5rem)] leading-[1.05] tracking-[-0.01em]">
 								<slot name="heading">{title}</slot>
 							</h1>
