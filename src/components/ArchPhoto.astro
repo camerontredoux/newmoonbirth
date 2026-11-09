@@ -14,10 +14,15 @@ interface Props {
 	sizes: string;
 	/** Where the photo's crop centers, as a Tailwind `object-*` class. */
 	crop?: string;
+	/**
+	 * Image quality, 1 to 100. Without it, Astro's defaults apply: 50 for AVIF, which smooths away fine detail
+	 * such as film grain, eyelashes and hair. Set 80 where that detail matters.
+	 */
+	quality?: number;
 	class?: string;
 }
 
-const { src, alt, sizes, crop = "object-center", class: className } = Astro.props;
+const { src, alt, sizes, crop = "object-center", quality, class: className } = Astro.props;
 ---
 
 <div data-light class:list={["hover-twinkle relative p-3 md:p-4", className]}>
@@ -27,6 +32,7 @@ const { src, alt, sizes, crop = "object-center", class: className } = Astro.prop
 			alt={alt}
 			widths={[400, 640, 960, 1280]}
 			sizes={sizes}
+			quality={quality}
 			formats={["avif", "webp"]}
 			class:list={[crop, "aspect-3/4 w-full object-cover"]}
 		/>

@@ -1,7 +1,7 @@
 ---
 import { Picture } from "astro:assets";
 import ArchPhoto from "../components/ArchPhoto.astro";
-import MoonPhase from "../components/MoonPhase.astro";
+import MoonDivider from "../components/MoonDivider.astro";
 import ServiceAreaMap from "../components/ServiceAreaMap.astro";
 import Base from "../layouts/Base.astro";
 import heroPhoto from "../assets/photos/hero-hands.jpg";
@@ -103,6 +103,7 @@ const [featuredWord, ...moreWords] = words;
 				src={introPhoto}
 				alt="Starlee laughs with her cheek resting in her hand"
 				sizes="(min-width: 768px) 26rem, 90vw"
+				quality={80}
 				class="reveal mx-auto w-full max-w-sm"
 			/>
 			<div>
@@ -128,9 +129,8 @@ const [featuredWord, ...moreWords] = words;
 	</section>
 
 	<section aria-labelledby="area-title" class="px-6 pb-28 md:px-10 md:pb-40">
-		<div
-			class="mx-auto grid max-w-6xl items-center gap-10 border-t border-moon-gold/60 pt-24 md:pt-32 lg:grid-cols-[2fr_3fr] lg:gap-16"
-		>
+		<MoonDivider id="area-moons" class="reveal" />
+		<div class="mx-auto mt-24 grid max-w-6xl items-center gap-10 md:mt-32 lg:grid-cols-[2fr_3fr] lg:gap-16">
 			<div class="reveal">
 				<p class="caps">Service area</p>
 				<h2 id="area-title" class="mt-6 text-[clamp(2.5rem,1.75rem+2.4vw,4rem)] leading-[1.1]">
@@ -149,11 +149,7 @@ const [featuredWord, ...moreWords] = words;
 			<section aria-labelledby="words-title" class="px-6 py-28 md:px-10 md:py-40">
 				<div class="mx-auto max-w-5xl">
 					<div class="reveal flex flex-col items-center">
-						<div aria-hidden="true" class="flex items-center gap-3 text-moon-navy">
-							<MoonPhase id="words-waxing" class="moon-waxing size-4" />
-							<MoonPhase id="words-full" class="moon-full size-5" />
-							<MoonPhase id="words-waning" class="moon-waning size-4" />
-						</div>
+						<MoonDivider id="words-moons" />
 						<h2 id="words-title" class="caps mt-6 text-moon-navy">
 							Kind words
 						</h2>

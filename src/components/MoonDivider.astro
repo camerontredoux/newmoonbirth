@@ -1,0 +1,20 @@
+---
+import MoonPhase from "./MoonPhase.astro";
+
+/**
+ * Three small moons side by side, waxing, full and waning. A divider between sections, or a mark above a heading.
+ */
+interface Props {
+	/** Prefix for the moons' SVG ids. It must be unique on the page. */
+	id: string;
+	class?: string;
+}
+
+const { id, class: className } = Astro.props;
+---
+
+<div aria-hidden="true" class:list={["flex items-center justify-center gap-3 text-moon-navy", className]}>
+	<MoonPhase id={`${id}-waxing`} class="moon-waxing size-4" />
+	<MoonPhase id={`${id}-full`} class="moon-full size-5" />
+	<MoonPhase id={`${id}-waning`} class="moon-waning size-4" />
+</div>
