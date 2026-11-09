@@ -1,6 +1,12 @@
 @import "tailwindcss";
 
 /*
+ * Applies when someone arrives at the site or reloads, not when they move between its pages.
+ * Base.astro sets `data-in-site` on <html> for a page reached from another page of the site.
+ */
+@custom-variant arrival (&:where(:root:not([data-in-site]) *));
+
+/*
  * New Moon Birth palette, sampled from the logo.
  */
 @theme {
@@ -24,7 +30,7 @@
 
   --animate-settle: settle 2.6s var(--ease-out-expo) both;
   /*
-   * The header's fade-in on page load. It matches the header's scroll fade (500ms, ease-out-expo, 0.75rem lift).
+   * The header's fade-in when someone arrives at the site. It matches the header's scroll fade (500ms, ease-out-expo, 0.75rem lift).
    * `backwards` fill: once the animation ends, the header's own styles apply again, so its scroll fade still works.
    */
   --animate-header-in: header-in 500ms var(--ease-out-expo) 150ms backwards;

@@ -7,7 +7,7 @@ import Logo from "./Logo.astro";
  *   scrolls and fades back in at the top.
  * - `solid`: white with navy text, and a little more compact. It sticks to the top of the screen.
  *
- * The visible header fades in on page load. Pages with a hero get both: the overlay header, plus a `floating` solid header that stays hidden
+ * The visible header fades in when someone arrives at the site, not on every page change. Pages with a hero get both: the overlay header, plus a `floating` solid header that stays hidden
  * until the hero is scrolled away (the script in Base.astro sets `data-shown`). The two never change
  * into each other. Each only fades in or out, so a fast scroll back to the top crossfades them.
  */
@@ -33,9 +33,9 @@ const current = (href: string) => (Astro.url.pathname === href ? "page" : undefi
 		// The overlay fades out in place once the page scrolls. The script in Base.astro pins it (`data-pinned`)
 		// and sets `data-away`. Without the script it is not pinned and scrolls away with the page instead.
 		overlay
-			? "absolute z-20 text-moon-cream motion-safe:animate-header-in transition-[opacity,translate] duration-500 ease-out-expo data-pinned:fixed data-away:pointer-events-none data-away:-translate-y-3 data-away:opacity-0"
+			? "absolute z-20 text-moon-cream motion-safe:arrival:animate-header-in transition-[opacity,translate] duration-500 ease-out-expo data-pinned:fixed data-away:pointer-events-none data-away:-translate-y-3 data-away:opacity-0"
 			: "z-30 bg-white/95 text-moon-navy shadow-[0_1px_0_var(--color-moon-sand)] backdrop-blur-md",
-		!overlay && !floating && "sticky motion-safe:animate-header-in",
+		!overlay && !floating && "sticky motion-safe:arrival:animate-header-in",
 		// Hidden is also `invisible`, so its links leave the tab order and the accessibility tree.
 		floating &&
 			"invisible fixed -translate-y-3 opacity-0 transition-[opacity,translate,visibility] duration-500 ease-out-expo data-shown:visible data-shown:translate-y-0 data-shown:opacity-100",

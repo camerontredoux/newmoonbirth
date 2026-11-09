@@ -101,6 +101,19 @@ const invite = Astro.url.pathname !== "/contact/";
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<link rel="manifest" href="/site.webmanifest" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		{/*
+			Marks a page reached from another page of the site with `data-in-site`, before anything is drawn.
+			The `arrival` variant in global.css uses it: the header fades in when someone arrives or reloads,
+			not on every page change, where it's already on screen.
+		*/}
+		<script is:inline>
+			if (
+				document.referrer.startsWith(location.origin + "/") &&
+				performance.getEntriesByType("navigation")[0]?.type !== "reload"
+			) {
+				document.documentElement.dataset.inSite = "";
+			}
+		</script>
 		<title>{fullTitle}</title>
 		<meta name="description" content={description} />
 		<meta name="author" content="Starlee Brown" />
