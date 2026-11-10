@@ -62,6 +62,8 @@ const structuredData = {
 				addressCountry: "US",
 			},
 			areaServed: towns.map((town) => ({ "@type": "City", name: `${town.name}, ${town.state}` })),
+			// The Google Business Profile, by its Knowledge Graph ID, so Google links the site and the profile.
+			sameAs: ["https://www.google.com/search?kgmid=/g/11z_84ffm1"],
 			founder: { "@id": `${Astro.site}#starlee` },
 		},
 		{
