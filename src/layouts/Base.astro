@@ -286,6 +286,16 @@ const invite = Astro.url.pathname !== "/contact/";
 		</footer>
 
 		<script>
+			// Eased, momentum scrolling for the mouse wheel and trackpad. Touch screens keep native scrolling.
+			// Anyone who prefers reduced motion keeps native scrolling too.
+			import Lenis from "lenis";
+			import "lenis/dist/lenis.css";
+			if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+				new Lenis({ autoRaf: true, anchors: true });
+			}
+		</script>
+
+		<script>
 			// Fades the transparent header out once the page scrolls, and shows the floating white header once the
 			// hero is scrolled away. See SiteHeader.astro.
 			const overlay = document.querySelector("[data-overlay-header]");
