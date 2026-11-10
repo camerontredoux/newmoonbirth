@@ -2,19 +2,26 @@
 import MoonPhase from "./MoonPhase.astro";
 
 /**
- * Three small moons side by side, waxing, full and waning. A divider between sections, or a mark above a heading.
+ * Three small moons side by side, waxing, full and waning. A mark above a heading, or with `lines`, a divider between
+ * sections: thin rules run out from the moons to the width of the page's content.
  */
 interface Props {
 	/** Prefix for the moons' SVG ids. It must be unique on the page. */
 	id: string;
+	lines?: boolean;
 	class?: string;
 }
 
-const { id, class: className } = Astro.props;
+const { id, lines = false, class: className } = Astro.props;
 ---
 
-<div aria-hidden="true" class:list={["flex items-center justify-center gap-3 text-moon-navy", className]}>
+<div
+	aria-hidden="true"
+	class:list={["flex items-center justify-center gap-3 text-moon-navy", lines && "mx-auto max-w-6xl", className]}
+>
+	{lines && <span class="mr-3 h-px flex-1 bg-moon-navy/20 md:mr-5"></span>}
 	<MoonPhase id={`${id}-waxing`} class="moon-waxing size-4" />
 	<MoonPhase id={`${id}-full`} class="moon-full size-5" />
 	<MoonPhase id={`${id}-waning`} class="moon-waning size-4" />
+	{lines && <span class="ml-3 h-px flex-1 bg-moon-navy/20 md:ml-5"></span>}
 </div>
