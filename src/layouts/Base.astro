@@ -223,7 +223,7 @@ const invite = Astro.url.pathname !== "/contact/";
 									Book a free consultation
 								</a>
 							</div>
-							<div data-light class="footer-moon order-first mx-auto w-28 md:order-none md:w-full md:max-w-sm">
+							<div data-light="x" class="footer-moon order-first mx-auto w-28 md:order-none md:w-full md:max-w-sm">
 								<MoonPhase id="footer-moon" class="w-full text-moon-cream" />
 							</div>
 						</div>
@@ -315,18 +315,27 @@ const invite = Astro.url.pathname !== "/contact/";
 			// Moonlight, for a mouse: gives each element marked `data-light`, and each button, the cursor's position over it
 			// as `--light-x` and `--light-y`, from 0 at its left or top edge to 1 at its right or bottom edge. CSS draws the
 			// light. See "Moonlight" in global.css. Scrolling moves the page under a still cursor, so it updates then too.
+			// `data-light="x"` marks an element that uses only the left-right position, so scrolling never changes it.
+			// Each change restyles the element and everything in it, and can redraw it, so the script skips elements off
+			// the screen and positions that haven't changed. Without that, the footer moon redrew on every frame of a scroll.
 			if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
 				let x = 0;
 				let y = 0;
 				let frame = 0;
+				const written = new WeakMap<HTMLElement, string>();
 				const update = () => {
 					const lit = [...document.querySelectorAll<HTMLElement>("[data-light], .button-solid, .button-light, .button-outline")];
 					const boxes = lit.map((element) => element.getBoundingClientRect());
 					lit.forEach((element, i) => {
-						const { left, top, width, height } = boxes[i];
-						if (!width || !height) return;
-						element.style.setProperty("--light-x", ((x - left) / width).toFixed(3));
-						element.style.setProperty("--light-y", ((y - top) / height).toFixed(3));
+						const { left, top, right, bottom, width, height } = boxes[i];
+						if (!width || !height || bottom < 0 || top > innerHeight || right < 0 || left > innerWidth) return;
+						const lightX = ((x - left) / width).toFixed(3);
+						const lightY = element.dataset.light === "x" ? undefined : ((y - top) / height).toFixed(3);
+						const position = `${lightX} ${lightY}`;
+						if (written.get(element) === position) return;
+						written.set(element, position);
+						element.style.setProperty("--light-x", lightX);
+						if (lightY !== undefined) element.style.setProperty("--light-y", lightY);
 					});
 				};
 				const schedule = () => {

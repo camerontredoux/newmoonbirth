@@ -453,6 +453,7 @@
  * the even glow on photos.
  * Base.astro's script gives each element marked `data-light`, and each button, the cursor's position over it as
  * `--light-x` and `--light-y`: 0 at its left or top edge and 1 at its right or bottom edge, and past those outside it.
+ * An element marked `data-light="x"` gets only `--light-x`. Use it when the light only follows the cursor left and right.
  * `--light-at` is the same position for a gradient.
  * With reduced motion, the soft lights still follow the cursor, but nothing moves or twinkles.
  */
