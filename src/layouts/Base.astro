@@ -228,7 +228,9 @@ const invite = Astro.url.pathname !== "/contact/";
 					)
 				}
 				<div class="grid gap-12 py-16 sm:grid-cols-2 md:py-20 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:gap-10">
-					<p class="max-w-sm font-display text-2xl leading-snug text-balance text-moon-cream">Every new moon is a beginning.</p>
+					<p class="max-w-sm font-display text-2xl leading-snug text-balance text-moon-cream lg:text-xl xl:text-2xl">
+						Like the new moon,<br />every birth is a beginning
+					</p>
 					<nav aria-labelledby="footer-explore">
 						<h2 id="footer-explore" class="caps text-moon-mist">Explore</h2>
 						<ul class="mt-6 space-y-3">
@@ -273,10 +275,7 @@ const invite = Astro.url.pathname !== "/contact/";
 						</ul>
 					</div>
 				</div>
-				{/* The moon and the gap beside it add 0.2 of the wordmark's width, so the wordmark takes 1/1.2 of the row. */}
-				<div aria-hidden="true" class="@container text-moon-cream">
-					<Logo large class="[--wordmark-width:calc(100cqw/1.2)]" />
-				</div>
+				<span aria-hidden="true" data-light class="wordmark relative block w-full text-moon-cream"></span>
 				<div class="caps flex flex-wrap justify-between gap-x-8 gap-y-3 pt-8 pb-10 text-[0.65rem] text-moon-cream/70">
 					<p>© {new Date().getFullYear()} New Moon Birth</p>
 					<p>Washougal, Washington</p>

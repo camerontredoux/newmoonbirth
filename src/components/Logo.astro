@@ -4,8 +4,6 @@
  * reaches above and below them without making the header taller.
  * Size it by the wordmark's width: pass `--wordmark-width` in `class`, for example `[--wordmark-width:10rem]`.
  * Set `onLight` on a white or cream background, where the moon's pale side would fade into the page.
- * Set `large` for the footer's full-width logo: the moon takes its full height in the row instead of overhanging it,
- * loads lazily from a copy big enough for that size, and the letters under the cursor warm to gold.
  * moon-mark.png is padded to exactly 8:9, so Astro's resized copies never trim the moon's edge.
  */
 import { Picture } from "astro:assets";
@@ -14,10 +12,9 @@ import moonMark from "../assets/moon-mark.png";
 interface Props {
 	class?: string;
 	onLight?: boolean;
-	large?: boolean;
 }
 
-const { class: className, onLight = false, large = false } = Astro.props;
+const { class: className, onLight = false } = Astro.props;
 ---
 
 <span
@@ -27,21 +24,17 @@ const { class: className, onLight = false, large = false } = Astro.props;
 	]}
 >
 	{/*
-		One copy, 6x the largest header moon (twice the tallest letters, 17.5px), so it stays sharp when someone zooms in.
+		One copy, 6x the largest moon (twice the tallest letters, 17.5px), so it stays sharp when someone zooms in.
 		Browsers pick from a srcset only on page load, so zooming in after load would keep a small copy.
 		As AVIF it's under 5 KB.
 	*/}
 	<Picture
 		src={moonMark}
 		alt=""
-		height={large ? 432 : 216}
+		height={216}
 		formats={["avif", "webp"]}
-		loading={large ? "lazy" : "eager"}
-		class:list={[
-			"h-[calc(var(--letter-height)*2)] w-auto",
-			!large && "-my-[calc(var(--letter-height)/2)]",
-			onLight && "moon-on-light",
-		]}
+		loading="eager"
+		class:list={["-my-[calc(var(--letter-height)/2)] h-[calc(var(--letter-height)*2)] w-auto", onLight && "moon-on-light"]}
 	/>
-	<span data-light={large || undefined} class:list={["wordmark block w-(--wordmark-width)", large && "relative"]}></span>
+	<span class="wordmark block w-(--wordmark-width)"></span>
 </span>
