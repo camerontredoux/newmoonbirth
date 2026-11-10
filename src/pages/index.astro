@@ -43,14 +43,14 @@ const [featuredWord, ...moreWords] = words;
 	<section
 		slot="hero"
 		aria-labelledby="hero-title"
-		class="relative isolate flex min-h-[max(100svh,40rem)] flex-col overflow-hidden bg-moon-ink text-moon-cream"
+		class="relative isolate flex min-h-[max(var(--screen-height),40rem)] flex-col overflow-hidden bg-moon-ink text-moon-cream"
 	>
 		{/* The photo is wider than it is tall, so on a tall screen it fills the height and shows wider than the screen. */}
 		<Picture
 			src={heroPhoto}
 			alt="In black and white, four hands rest on a pregnant woman’s bare belly as she sits cross-legged between two others"
 			widths={[640, 960, 1280, 1920, 2400]}
-			sizes="max(100vw, 130vh, 832px)"
+			sizes="max(100vw, min(130vh, 325vw), 832px)"
 			formats={formats}
 			loading="eager"
 			fetchpriority="high"
