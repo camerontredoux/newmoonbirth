@@ -120,6 +120,12 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
+  /* In-page links (#anchors) glide to their target. Anyone who prefers reduced motion jumps straight there. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
   /* No elastic bounce at the top and bottom of the page with a mouse or trackpad. Touch screens keep it. */
   @media (pointer: fine) {
     html, body {
