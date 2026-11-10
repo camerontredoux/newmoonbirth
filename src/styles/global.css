@@ -429,11 +429,72 @@
   from { opacity: 0; scale: 0.6; }
 }
 
-/* The footer's moon rises a little as the footer scrolls into view. */
+/*
+ * The footer's moon glows, brightest on its lit side. A blur filter drew this glow before, but the browser redrew the
+ * blur on every frame of the moon's phase change. Gradients draw it now, with the same falloff as that blur:
+ * - `::before` fades out from the moon's edge.
+ * - `::after` reaches a little way into the dark side, from the edge of the light.
+ * A mask on both fades the glow toward the dark side as the moon thins.
+ */
 .footer-moon {
-  filter: drop-shadow(0 0 4rem color-mix(in oklab, var(--color-moon-sand) 30%, transparent));
+  position: relative;
+  isolation: isolate;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    mask-image: linear-gradient(to right, rgb(0 0 0 / var(--moon-wax)), rgb(0 0 0 / calc(1 - var(--moon-wane))));
+    pointer-events: none;
+  }
+
+  &::before {
+    /* The moon's disc is 96% of its box. This puts the disc's edge 9rem inside the glow's edge. */
+    inset: calc(2% - 9rem);
+    background: radial-gradient(
+      circle closest-side,
+      transparent calc(100% - 9rem - 1px),
+      color-mix(in oklab, var(--color-moon-sand) 13%, transparent) calc(100% - 9rem),
+      color-mix(in oklab, var(--color-moon-sand) 10.1%, transparent) calc(100% - 8rem),
+      color-mix(in oklab, var(--color-moon-sand) 7.4%, transparent) calc(100% - 7rem),
+      color-mix(in oklab, var(--color-moon-sand) 5.1%, transparent) calc(100% - 6rem),
+      color-mix(in oklab, var(--color-moon-sand) 3.3%, transparent) calc(100% - 5rem),
+      color-mix(in oklab, var(--color-moon-sand) 2%, transparent) calc(100% - 4rem),
+      color-mix(in oklab, var(--color-moon-sand) 1.1%, transparent) calc(100% - 3rem),
+      color-mix(in oklab, var(--color-moon-sand) 0.6%, transparent) calc(100% - 2rem),
+      transparent
+    );
+  }
+
+  /*
+   * The moon's shadow discs (see "Moon phases") have a radius of 49% of the box and move with `--moon-wax` and
+   * `--moon-wane`. Each gradient sits on one disc and brightens toward its edge, where the light begins. The more of
+   * the moon is lit, the brighter the glow.
+   */
+  &::after {
+    --glow-inside:
+      transparent calc(100% - 9rem),
+      color-mix(in oklab, var(--color-moon-sand) 1%, transparent) calc(100% - 8rem),
+      color-mix(in oklab, var(--color-moon-sand) 2.2%, transparent) calc(100% - 7rem),
+      color-mix(in oklab, var(--color-moon-sand) 3.8%, transparent) calc(100% - 6rem),
+      color-mix(in oklab, var(--color-moon-sand) 6%, transparent) calc(100% - 5rem),
+      color-mix(in oklab, var(--color-moon-sand) 8.5%, transparent) calc(100% - 4rem),
+      color-mix(in oklab, var(--color-moon-sand) 11.5%, transparent) calc(100% - 3rem),
+      color-mix(in oklab, var(--color-moon-sand) 15.5%, transparent) calc(100% - 2rem),
+      color-mix(in oklab, var(--color-moon-sand) 20%, transparent) calc(100% - 1rem),
+      color-mix(in oklab, var(--color-moon-sand) 24%, transparent) 100%,
+      transparent 100%;
+    inset: 0;
+    clip-path: circle(48%);
+    background:
+      radial-gradient(ellipse 49% 49% at calc(50% - var(--moon-wax) * 100%) 50%, var(--glow-inside)),
+      radial-gradient(ellipse 49% 49% at calc(50% + (1 - var(--moon-wane)) * 100%) 50%, var(--glow-inside));
+    opacity: calc(0.44 + 0.76 * (var(--moon-wax) - var(--moon-wane)));
+  }
 }
 
+/* The footer's moon rises a little as the footer scrolls into view. */
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
     .footer-moon {
